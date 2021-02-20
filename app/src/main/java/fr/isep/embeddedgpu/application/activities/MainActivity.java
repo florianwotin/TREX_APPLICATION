@@ -1,8 +1,10 @@
-package fr.isep.embeddedgpu.application;
+package fr.isep.embeddedgpu.application.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import fr.isep.embeddedgpu.application.R;
 
 public class MainActivity extends AppCompatActivity {
 
