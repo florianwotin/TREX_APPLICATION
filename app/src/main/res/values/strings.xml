@@ -1,3 +1,19 @@
 <resources>
+
+    <!-- APPLICATION -->
     <string name="app_name">TREX</string>
+
+    <!-- TEXT VIEWS -->
+    <string name="recording_enabled">Enregistrement activé</string>
+    <string name="recording_disabled">Enregistrement désactivé</string>
+    <string name="max_speed">Vitesse maximale : </string>
+    <string name="acceleration">Accélération : </string>
+
+    <!-- BUTTONS -->
+    <string name="button_mofify">Modifier</string>
+    <string name="button_enable">Activer</string>
+    <string name="button_disable">Désactiver</string>
+    <string name="button_move_forward">Avancer</string>
+    <string name="button_move_backward">Reculer</string>
+
 </resources>
