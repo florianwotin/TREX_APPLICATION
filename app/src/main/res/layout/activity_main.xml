@@ -47,17 +47,17 @@
 
         <TextView
             android:id="@+id/trex_speed_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/max_speed" />
-
-        <Button
-            android:id="@+id/trex_speed_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="140dp"
-            android:text="@string/button_mofify" />
+            android:text="@string/max_speed" />
+
+        <SeekBar
+            android:id="@+id/trex_speed_slider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -73,17 +73,17 @@
 
         <TextView
             android:id="@+id/trex_accel_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/acceleration" />
-
-        <Button
-            android:id="@+id/trex_accel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="140dp"
-            android:text="@string/button_mofify" />
+            android:text="@string/acceleration" />
+
+        <SeekBar
+            android:id="@+id/trex_accel_slider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

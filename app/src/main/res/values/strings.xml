@@ -6,8 +6,9 @@
     <!-- TEXT VIEWS -->
     <string name="recording_enabled">Enregistrement activé</string>
     <string name="recording_disabled">Enregistrement désactivé</string>
-    <string name="max_speed">Vitesse maximale : </string>
-    <string name="acceleration">Accélération : </string>
+    <string name="max_speed">Vitesse maximale</string>
+    <string name="acceleration">Accélération</string>
+    <string name="number_autofill">Entrer un nombre</string>
 
     <!-- BUTTONS -->
     <string name="button_mofify">Modifier</string>
