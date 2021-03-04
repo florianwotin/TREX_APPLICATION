@@ -15,11 +15,11 @@ import java.io.OutputStream;
 // Link to the original class : https://github.com/serge144/ArduinoConnectorBT/blob/master/java/projects/pers/sbp/ardcon/ConnectedThread.java
 
 public class BluetoothThread extends Thread {
+    // Private class attributes
+    private static final String TAG = "[BLUETOOTH THREAD]";
+
     // Public class attributes
     public static final int RESPONSE_MESSAGE = 10;
-
-    // Private class attributes
-    public static final String TAG = "[BLUETOOTH THREAD]";
 
     // Protected instance attributes
     protected final BluetoothSocket socket;
@@ -98,7 +98,7 @@ public class BluetoothThread extends Thread {
             e.printStackTrace();
         }
     }
-    
+
     public void cancel() {
         Log.d(TAG, "canceling thread");
         try {

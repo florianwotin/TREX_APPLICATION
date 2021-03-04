@@ -1,31 +1,38 @@
 package fr.isep.embeddedgpu.application.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import fr.isep.embeddedgpu.application.R;
 import fr.isep.embeddedgpu.application.services.TrexService;
 
+import static fr.isep.embeddedgpu.application.bluetooth.BluetoothProperties.REQUEST_ENABLE_BLUETOOTH;
+
 public class MainActivity extends AppCompatActivity {
+    // Tag
+    private static final String TAG = "[MAIN ACTIVITY]";
+
     // Services
-    TrexService trexService;
+    protected TrexService trexService;
 
     // UI
-    Button recordingButton;
-    Button moveForwardButton;
-    Button moveBackwardButton;
-    SeekBar maxSpeedSlider;
-    SeekBar accelerationSlider;
-    TextView recordingTextView;
-    TextView maxSpeedTextView;
-    TextView accelerationTextView;
+    private Button recordingButton;
+    private Button moveForwardButton;
+    private Button moveBackwardButton;
+    private SeekBar maxSpeedSlider;
+    private SeekBar accelerationSlider;
+    private TextView recordingTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,32 +41,46 @@ public class MainActivity extends AppCompatActivity {
         initialize();
     }
 
-    protected void initialize() {
-        trexService = new TrexService();
-        initializeUI();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // if result is ok and bluetooth enabled initialize bluetooth process
+        if((resultCode == RESULT_OK) && (requestCode == REQUEST_ENABLE_BLUETOOTH)){
+            trexService.initializeBluetoothProcess();
+        }
     }
 
+    protected void initialize() {
+        Log.d(TAG, "initialization");
+        initializeServices();
+        initializeUI();
+        activateBluetooth();
+    }
+
+    protected void initializeServices() {
+        Log.d(TAG, "initializing services");
+        trexService = new TrexService();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     protected void initializeUI() {
+        Log.d(TAG, "initializing UI");
         // recording
         recordingTextView = findViewById(R.id.trex_recording_text);
         recordingButton = findViewById(R.id.trex_recording_button);
-        recordingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (trexService.isRecording()) {
-                    trexService.stopRecording();
-                    recordingButton.setText(R.string.button_enable);
-                    recordingTextView.setText(R.string.recording_disabled);
-                } else {
-                    trexService.startRecording();
-                    recordingButton.setText(R.string.button_disable);
-                    recordingTextView.setText(R.string.recording_enabled);
-                }
+        recordingButton.setOnClickListener(v -> {
+            if (trexService.isRecording()) {
+                trexService.stopRecording();
+                recordingButton.setText(R.string.button_enable);
+                recordingTextView.setText(R.string.recording_disabled);
+            } else {
+                trexService.startRecording();
+                recordingButton.setText(R.string.button_disable);
+                recordingTextView.setText(R.string.recording_enabled);
             }
         });
 
         // max speed
-        maxSpeedTextView = findViewById(R.id.trex_speed_text);
         maxSpeedSlider = findViewById(R.id.trex_speed_slider);
         maxSpeedSlider.setMin(TrexService.MIN_SPEED);
         maxSpeedSlider.setMax(TrexService.MAX_SPEED);
@@ -82,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // acceleration
-        accelerationTextView = findViewById(R.id.trex_accel_text);
         accelerationSlider = findViewById(R.id.trex_accel_slider);
         accelerationSlider.setMin(TrexService.MIN_ACCELERATION);
         accelerationSlider.setMax(TrexService.MAX_ACCELERATION);
@@ -116,19 +136,19 @@ public class MainActivity extends AppCompatActivity {
                         // if handler is busy stop callback here
                         if (handler != null) return true;
                         handler = new Handler();
-                        handler.postDelayed(action, TrexService.SEND_PERIOD_MS);
+                        handler.postDelayed(moveForward, TrexService.SEND_PERIOD_MS);
                         break;
                     case MotionEvent.ACTION_UP:
                         // if handler is busy stop callback here
                         if (handler == null) return true;
-                        handler.removeCallbacks(action);
+                        handler.removeCallbacks(moveForward);
                         handler = null;
                         break;
                 }
                 return false;
             }
 
-            Runnable action = new Runnable() {
+            final Runnable moveForward = new Runnable() {
                 @Override public void run() {
                     trexService.moveForward();
                     handler.postDelayed(this, TrexService.SEND_PERIOD_MS);
@@ -148,24 +168,43 @@ public class MainActivity extends AppCompatActivity {
                         // if handler is busy stop callback here
                         if (handler != null) return true;
                         handler = new Handler();
-                        handler.postDelayed(action, TrexService.SEND_PERIOD_MS);
+                        handler.postDelayed(moveBackward, TrexService.SEND_PERIOD_MS);
                         break;
                     case MotionEvent.ACTION_UP:
                         // if handler is busy stop callback here
                         if (handler == null) return true;
-                        handler.removeCallbacks(action);
+                        handler.removeCallbacks(moveBackward);
                         handler = null;
                         break;
                 }
                 return false;
             }
 
-            Runnable action = new Runnable() {
+            final Runnable moveBackward = new Runnable() {
                 @Override public void run() {
                     trexService.moveBackward();
                     handler.postDelayed(this, TrexService.SEND_PERIOD_MS);
                 }
             };
         });
+    }
+    
+    protected void activateBluetooth() {
+        Log.d(TAG, "trying to get trex service bluetooth adapter");
+        if (trexService.getBluetoothAdapter() != null) {
+            Log.d(TAG, "checking if bluetooth is enabled");
+            if(!trexService.getBluetoothAdapter().isEnabled()) {
+                Log.d(TAG, "bluetooth is disabled, asking user to enable it");
+                // if bluetooth is not enabled create intent for user to turn it on
+                Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBluetoothIntent, REQUEST_ENABLE_BLUETOOTH);
+            } else {
+                Log.d(TAG, "bluetooth is enabled, starting bluetooth initialization process");
+                // if it is enabled just initialize it
+                trexService.initializeBluetoothProcess();
+            }
+        } else {
+            Log.e(TAG, "error occurred while activating bluetooth: trex service bluetooth adapter is null");
+        }
     }
 }
