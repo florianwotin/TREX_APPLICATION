@@ -47,11 +47,12 @@
                 android:id="@+id/imageView"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:contentDescription="@string/bluetooth_disabled"
                 android:src="@drawable/bluetooth_disabled_foreground" />
 
             <TextView
                 android:id="@+id/bluetooth_state_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"

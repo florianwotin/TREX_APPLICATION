@@ -30,6 +30,7 @@ import fr.isep.embeddedgpu.application.bluetooth.BluetoothThread;
 import fr.isep.embeddedgpu.application.fragments.BluetoothFragment;
 import fr.isep.embeddedgpu.application.fragments.SettingsFragment;
 import fr.isep.embeddedgpu.application.fragments.TrexFragment;
+import fr.isep.embeddedgpu.application.trex.TrexService;
 
 import static fr.isep.embeddedgpu.application.bluetooth.BluetoothProperties.REQUEST_ENABLE_BLUETOOTH;
 import static fr.isep.embeddedgpu.application.bluetooth.BluetoothThread.RESPONSE_MESSAGE;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Services
     private BluetoothService bluetoothService;
+    private TrexService trexService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeServices() {
         initializeBluetooth();
+        initializeTrex();
     }
 
     private void initializeBluetooth() {
@@ -107,11 +110,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initializeTrex() {
+        trexService = new TrexService();
+    }
+
     private void initializeFragments() {
         // instantiate each fragment
         bluetoothFragment = new BluetoothFragment(bluetoothService);
-        trexFragment = new TrexFragment();
-        settingsFragment = new SettingsFragment();
+        trexFragment = new TrexFragment(trexService);
+        settingsFragment = new SettingsFragment(trexService);
         // declare default active fragment
         activeFragment = bluetoothFragment;
         // add all fragments in fragment manager

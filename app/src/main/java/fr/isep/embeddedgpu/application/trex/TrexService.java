@@ -42,20 +42,17 @@ public class TrexService {
 
     // Constructor
     public TrexService() {
-        // speed and acceleration
+        this.isRecording = false;
         this.speedPercent = MAX_SPEED_PERCENT;
         this.accelerationPercent = MAX_ACCELERATION_PERCENT / 2;
         this.previousSpeed = 0;
         this.updateSpeed();
         this.updateAcceleration();
-        // recording
-        this.isRecording = false;
     }
 
     protected void updateSpeed() {
         updateMaxSpeed();
         updateMinSpeed();
-        Log.e(TAG, String.format("update maxSpeed=%d and minSpeed=%d", maxSpeed, minSpeed));
     }
 
     protected void updateMaxSpeed() {
