@@ -3,18 +3,29 @@
     <!-- APPLICATION -->
     <string name="app_name">TREX</string>
 
-    <!-- TEXT VIEWS -->
-    <string name="recording_enabled">Enregistrement activé</string>
-    <string name="recording_disabled">Enregistrement désactivé</string>
-    <string name="max_speed">Vitesse maximale</string>
-    <string name="acceleration">Accélération</string>
-    <string name="number_autofill">Entrer un nombre</string>
+    <!-- BOTTOM MENU BAR -->
+    <string name="menu_bluetooth">Bluetooth</string>
+    <string name="menu_trex">Conduire</string>
+    <string name="menu_settings">Paramètres</string>
 
     <!-- BUTTONS -->
-    <string name="button_mofify">Modifier</string>
     <string name="button_enable">Activer</string>
     <string name="button_disable">Désactiver</string>
+    <string name="button_mofify">Modifier</string>
     <string name="button_move_forward">Avancer</string>
     <string name="button_move_backward">Reculer</string>
+
+    <!-- TREX -->
+    <string name="trex_recording_enabled">Enregistrement activé</string>
+    <string name="trex_recording_disabled">Enregistrement désactivé</string>
+    <string name="trex_max_speed">Vitesse maximale</string>
+    <string name="trex_acceleration">Accélération</string>
+
+    <!-- BLUETOOTH -->
+    <string name="bluetooth_title">Paramétrage du Bluetooth</string>
+    <string name="bluetooth_enabled">Bluetooth activé</string>
+    <string name="bluetooth_disabled">Bluetooth désactivé</string>
+    <string name="bluetooth_button_discoverable">Discoverable</string>
+    <string name="bluetooth_button_paired_devices">Paired devices</string>
 
 </resources>

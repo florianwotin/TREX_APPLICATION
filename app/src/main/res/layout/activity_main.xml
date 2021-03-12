@@ -1,150 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/trex_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
     tools:context=".activities.MainActivity">
 
-    <LinearLayout
-        android:id="@+id/trex_recording_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/trex_speed_layout"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <!-- Content -->
 
-        <TextView
-            android:id="@+id/trex_recording_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/recording_disabled" />
+    <FrameLayout
+        android:id="@+id/activity_main_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/activity_main_bottom_navigation" >
 
-        <Button
-            android:id="@+id/trex_recording_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="140dp"
-            android:text="@string/button_enable" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/trex_speed_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/trex_accel_layout"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/trex_recording_layout">
-
-        <TextView
-            android:id="@+id/trex_speed_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="140dp"
-            android:text="@string/max_speed" />
-
-        <SeekBar
-            android:id="@+id/trex_speed_slider"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/trex_accel_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/trex_nav_layout"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/trex_speed_layout">
-
-        <TextView
-            android:id="@+id/trex_accel_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="140dp"
-            android:text="@string/acceleration" />
-
-        <SeekBar
-            android:id="@+id/trex_accel_slider"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/trex_nav_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/trex_accel_layout">
-
-        <io.github.controlwear.virtual.joystick.android.JoystickView
-            android:id="@+id/trex_joystick_direction"
-            android:layout_width="wrap_content"
+        <include
+            layout="@layout/activity_main_fragment_container"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:JV_backgroundColor="#009688"
-            app:JV_borderColor="#00796B"
-            app:JV_borderWidth="4dp"
-            app:JV_buttonColor="#FF6E40"
-            app:JV_buttonSizeRatio="20%"
-            app:JV_fixedCenter="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/trex_controls_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/trex_controls_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/navigation"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/trex_joystick_direction"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+    </FrameLayout>
 
-            <Button
-                android:id="@+id/trex_controls_move_forward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:minWidth="140dp"
-                android:text="@string/button_move_forward"
-                app:icon="@drawable/arrow_upward_foreground"
-                app:iconSize="20dp" />
+    <!-- Navigation -->
 
-            <Button
-                android:id="@+id/trex_controls_move_backward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:minWidth="140dp"
-                android:text="@string/button_move_backward"
-                app:icon="@drawable/arrow_downward_foreground"
-                app:iconSize="20dp" />
-        </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/activity_main_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/deep_sky_blue"
+        app:menu="@menu/bottom_navigation_menu" />
+</RelativeLayout>

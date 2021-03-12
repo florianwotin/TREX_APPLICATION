@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_item_bluetooth"
+        android:enabled="true"
+        android:icon="@drawable/bluetooth_foreground"
+        android:title="@string/menu_bluetooth"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_item_trex"
+        android:enabled="true"
+        android:icon="@drawable/control_foreground"
+        android:title="@string/menu_trex"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_item_settings"
+        android:enabled="true"
+        android:icon="@drawable/settings_foreground"
+        android:title="@string/menu_settings"
+        app:showAsAction="ifRoom" />
+</menu>
