@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -54,16 +55,19 @@ public class DrivingFragment extends Fragment {
 
     private void initializeRecording() {
         TextView recordingTextView = root.findViewById(R.id.driving_recording_text);
+        ImageView recordingImageView = root.findViewById(R.id.driving_recording_image);
         Button recordingButton = root.findViewById(R.id.driving_recording_button);
         recordingButton.setOnClickListener(v -> {
             if (drivingService.isRecording()) {
                 drivingService.stopRecording();
                 recordingButton.setText(R.string.button_enable);
                 recordingTextView.setText(R.string.driving_recording_disabled);
+                recordingImageView.setImageResource(R.drawable.not_recording_foreground);
             } else {
                 drivingService.startRecording();
                 recordingButton.setText(R.string.button_disable);
                 recordingTextView.setText(R.string.driving_recording_enabled);
+                recordingImageView.setImageResource(R.drawable.recording_foreground);
             }
         });
     }
