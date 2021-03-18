@@ -14,10 +14,16 @@ import static fr.isep.embeddedgpu.application.bluetooth.BluetoothThread.RESPONSE
 
 public class BluetoothService {
     private static final String TAG = "[BLUETOOTH SERVICE]";
+
+    // Bluetooth
     protected BluetoothAdapter bluetoothAdapter;
     protected BluetoothSocket bluetoothSocket;
     protected BluetoothThread bluetoothThread;
     protected Handler handler;
+
+    // Flags
+    protected boolean isBluetoothEnabled = false;
+    protected boolean isBluetoothAdminEnabled = false;
 
     public BluetoothService() {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -78,5 +84,21 @@ public class BluetoothService {
 
     public BluetoothAdapter getBluetoothAdapter() {
         return bluetoothAdapter;
+    }
+
+    public boolean isBluetoothEnabled() {
+        return isBluetoothEnabled;
+    }
+
+    public void setBluetoothEnabled(boolean bluetoothEnabled) {
+        isBluetoothEnabled = bluetoothEnabled;
+    }
+
+    public boolean isBluetoothAdminEnabled() {
+        return isBluetoothAdminEnabled;
+    }
+
+    public void setBluetoothAdminEnabled(boolean bluetoothAdminEnabled) {
+        isBluetoothAdminEnabled = bluetoothAdminEnabled;
     }
 }

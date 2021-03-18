@@ -1,39 +1,33 @@
 package fr.isep.embeddedgpu.application.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
-import android.view.MenuItem;
+
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import fr.isep.embeddedgpu.application.R;
 import fr.isep.embeddedgpu.application.bluetooth.BluetoothService;
-import fr.isep.embeddedgpu.application.bluetooth.BluetoothThread;
 import fr.isep.embeddedgpu.application.fragments.BluetoothFragment;
 import fr.isep.embeddedgpu.application.fragments.SettingsFragment;
-import fr.isep.embeddedgpu.application.fragments.TrexFragment;
-import fr.isep.embeddedgpu.application.trex.TrexService;
+import fr.isep.embeddedgpu.application.fragments.DrivingFragment;
+import fr.isep.embeddedgpu.application.driving.DrivingService;
 
-import static fr.isep.embeddedgpu.application.bluetooth.BluetoothProperties.REQUEST_ENABLE_BLUETOOTH;
-import static fr.isep.embeddedgpu.application.bluetooth.BluetoothThread.RESPONSE_MESSAGE;
+import static fr.isep.embeddedgpu.application.requests.RequestsCodes.REQUEST_ENABLE_BLUETOOTH;
+import static fr.isep.embeddedgpu.application.requests.RequestsCodes.REQUEST_ENABLE_BLUETOOTH_ADMIN;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "[MAIN ACTIVITY]";
@@ -41,13 +35,13 @@ public class MainActivity extends AppCompatActivity {
     // Fragments
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private BluetoothFragment bluetoothFragment;
-    private TrexFragment trexFragment;
+    private DrivingFragment drivingFragment;
     private SettingsFragment settingsFragment;
     private Fragment activeFragment;
 
     // Services
     private BluetoothService bluetoothService;
-    private TrexService trexService;
+    private DrivingService drivingService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +54,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // if result is ok and bluetooth enabled initialize bluetooth process
-        if((resultCode == RESULT_OK) && (requestCode == REQUEST_ENABLE_BLUETOOTH)){
+        switch(requestCode) {
+            case REQUEST_ENABLE_BLUETOOTH:
+                if (resultCode == RESULT_OK)
+                    bluetoothService.setBluetoothEnabled(true);
+            case REQUEST_ENABLE_BLUETOOTH_ADMIN:
+                if (resultCode == RESULT_OK)
+                    bluetoothService.setBluetoothAdminEnabled(true);
+        }
+        // if all bluetooth permissions are OK initialize bluetooth process
+        if(bluetoothService.isBluetoothEnabled() && bluetoothService.isBluetoothAdminEnabled()) {
+            Log.d(TAG, "Starting bluetooth process: both bluetooth and admin bluetooth permissions are OK");
             //bluetoothService.initializeBluetoothProcess();
         }
     }
@@ -69,29 +72,31 @@ public class MainActivity extends AppCompatActivity {
     private void checkPermissions() {
         // bluetooth permission
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_DENIED) {
-            Log.d(TAG, "bluetooth permission denied: send permission request");
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH}, 1);
+            Log.d(TAG, "Bluetooth permission denied: send permission request");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH}, REQUEST_ENABLE_BLUETOOTH);
         }
 
         // admin bluetooth permission
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_DENIED) {
-            Log.d(TAG, "admin bluetooth permission denied: send permission request");
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 1);
+            Log.d(TAG, "Admin bluetooth permission denied: send permission request");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ENABLE_BLUETOOTH_ADMIN);
         }
     }
 
     private void initialize() {
+        Log.d(TAG, "Starting initialization");
         initializeServices();
         initializeFragments();
         initializeUI();
+        Log.d(TAG, "Initialization OK");
     }
 
     private void initializeServices() {
-        initializeBluetooth();
-        initializeTrex();
+        initializeBluetoothService();
+        initializeDrivingService();
     }
 
-    private void initializeBluetooth() {
+    private void initializeBluetoothService() {
         bluetoothService = new BluetoothService();
         Log.d(TAG, "trying to get bluetooth adapter");
         if (bluetoothService.getBluetoothAdapter() != null) {
@@ -110,15 +115,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeTrex() {
-        trexService = new TrexService();
+    private void initializeDrivingService() {
+        drivingService = new DrivingService();
     }
 
     private void initializeFragments() {
         // instantiate each fragment
         bluetoothFragment = new BluetoothFragment(bluetoothService);
-        trexFragment = new TrexFragment(trexService);
-        settingsFragment = new SettingsFragment(trexService);
+        drivingFragment = new DrivingFragment(drivingService);
+        settingsFragment = new SettingsFragment(drivingService);
         // declare default active fragment
         activeFragment = bluetoothFragment;
         // add all fragments in fragment manager
@@ -128,13 +133,15 @@ public class MainActivity extends AppCompatActivity {
     private void addAllFragments() {
         // initialize and hide all fragments
         addFragment(bluetoothFragment, BluetoothFragment.TAG);
-        addFragment(trexFragment, TrexFragment.TAG);
+        addFragment(drivingFragment, DrivingFragment.TAG);
         addFragment(settingsFragment, SettingsFragment.TAG);
-        // show active fragment
+        // show default fragment and set title
         fragmentManager.beginTransaction().show(activeFragment).commit();
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.app_bluetooth_fragment);
     }
 
     private void addFragment(Fragment fragment, String tag) {
+        // fragments are added into the main container from main activity
         fragmentManager.
                 beginTransaction().
                 add(R.id.main_container, fragment, tag).
@@ -148,11 +155,11 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menu_item_bluetooth:
-                    return switchFragment(bluetoothFragment, BluetoothFragment.TITLE);
+                    return switchFragment(bluetoothFragment, R.string.app_bluetooth_fragment);
                 case R.id.menu_item_trex:
-                    return switchFragment(trexFragment, TrexFragment.TITLE);
+                    return switchFragment(drivingFragment, R.string.app_driving_fragment);
                 case R.id.menu_item_settings:
-                    return switchFragment(settingsFragment, SettingsFragment.TITLE);
+                    return switchFragment(settingsFragment, R.string.app_settings_fragment);
                 default:
                     break;
             }
@@ -161,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Function used by navigation to switch fragment
-    private boolean switchFragment(Fragment fragment, String title) {
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+    private boolean switchFragment(Fragment fragment, @StringRes int titleID) {
+        Objects.requireNonNull(getSupportActionBar()).setTitle(titleID);
         fragmentManager.beginTransaction().hide(activeFragment).show(fragment).commit();
         activeFragment = fragment;
         return true;

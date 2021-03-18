@@ -12,7 +12,6 @@ import fr.isep.embeddedgpu.application.bluetooth.BluetoothService;
 
 public class BluetoothFragment extends Fragment {
     public static final String TAG = "[BLUETOOTH FRAGMENT]";
-    public static final String TITLE = "BLUETOOTH";
 
     // Services
     protected BluetoothService bluetoothService;

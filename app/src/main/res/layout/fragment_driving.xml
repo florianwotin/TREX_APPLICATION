@@ -2,32 +2,32 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/trex_main_layout"
+    android:id="@+id/driving_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    tools:context=".fragments.TrexFragment">
+    tools:context=".fragments.DrivingFragment">
 
     <LinearLayout
-        android:id="@+id/trex_recording_layout"
+        android:id="@+id/driving_recording_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/trex_nav_layout"
+        app:layout_constraintBottom_toTopOf="@id/driving_nav_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/trex_recording_text"
+            android:id="@+id/driving_recording_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/trex_recording_disabled" />
+            android:text="@string/driving_recording_disabled" />
 
         <Button
-            android:id="@+id/trex_recording_button"
+            android:id="@+id/driving_recording_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="140dp"
@@ -35,16 +35,16 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/trex_nav_layout"
+        android:id="@+id/driving_nav_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/trex_recording_layout">
+        app:layout_constraintTop_toBottomOf="@id/driving_recording_layout">
 
         <io.github.controlwear.virtual.joystick.android.JoystickView
-            android:id="@+id/trex_joystick_direction"
+            android:id="@+id/driving_joystick_direction"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -55,23 +55,23 @@
             app:JV_buttonSizeRatio="20%"
             app:JV_fixedCenter="false"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/trex_controls_layout"
+            app:layout_constraintEnd_toStartOf="@+id/driving_controls_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/trex_controls_layout"
+            android:id="@+id/driving_controls_layout"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/trex_joystick_direction"
+            app:layout_constraintStart_toEndOf="@+id/driving_joystick_direction"
             app:layout_constraintTop_toTopOf="parent">
 
             <Button
-                android:id="@+id/trex_controls_move_forward"
+                android:id="@+id/driving_controls_move_forward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -82,7 +82,7 @@
                 app:iconSize="20dp" />
 
             <Button
-                android:id="@+id/trex_controls_move_backward"
+                android:id="@+id/driving_controls_move_backward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

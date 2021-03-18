@@ -1,16 +1,10 @@
-package fr.isep.embeddedgpu.application.trex;
+package fr.isep.embeddedgpu.application.driving;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.os.Handler;
 import android.util.Log;
 
 import java.util.UUID;
 
-import fr.isep.embeddedgpu.application.bluetooth.BluetoothThread;
-
-public class TrexService {
+public class DrivingService {
     private static final String TAG = "[TREX SERVICE]";
 
     // Public class attributes
@@ -41,7 +35,7 @@ public class TrexService {
     private boolean isRecording;
 
     // Constructor
-    public TrexService() {
+    public DrivingService() {
         this.isRecording = false;
         this.speedPercent = MAX_SPEED_PERCENT;
         this.accelerationPercent = MAX_ACCELERATION_PERCENT / 2;

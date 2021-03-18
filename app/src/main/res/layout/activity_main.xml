@@ -34,4 +34,5 @@
         android:layout_gravity="bottom"
         android:background="@color/deep_sky_blue"
         app:menu="@menu/bottom_navigation_menu" />
+
 </RelativeLayout>

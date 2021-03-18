@@ -10,20 +10,19 @@ import android.widget.SeekBar;
 import androidx.fragment.app.Fragment;
 
 import fr.isep.embeddedgpu.application.R;
-import fr.isep.embeddedgpu.application.trex.TrexService;
+import fr.isep.embeddedgpu.application.driving.DrivingService;
 
 public class SettingsFragment extends Fragment {
     public static final String TAG = "[SETTINGS FRAGMENT]";
-    public static final String TITLE = "PARAMETRES";
 
     // Services
-    protected TrexService trexService;
+    protected DrivingService drivingService;
 
     // UI
     private View root;
 
-    public SettingsFragment(TrexService trexService) {
-        this.trexService = trexService;
+    public SettingsFragment(DrivingService drivingService) {
+        this.drivingService = drivingService;
     }
 
     @Override
@@ -35,24 +34,26 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_settings, container, false);
-        initializeUI();
+        initialize();
         return root;
     }
 
-    private void initializeUI() {
+    private void initialize() {
+        Log.d(TAG, "Starting initialization");
         initializeMaxSpeedPercent();
         initializeMaxAccelerationPercent();
+        Log.d(TAG, "Initialization OK");
     }
 
     private void initializeMaxSpeedPercent() {
         SeekBar maxSpeedPercentSlider = root.findViewById(R.id.trex_speed_slider);
-        maxSpeedPercentSlider.setMin(TrexService.MIN_SPEED_PERCENT);
-        maxSpeedPercentSlider.setMax(TrexService.MAX_SPEED_PERCENT);
-        maxSpeedPercentSlider.setProgress(trexService.getSpeedPercent());
+        maxSpeedPercentSlider.setMin(DrivingService.MIN_SPEED_PERCENT);
+        maxSpeedPercentSlider.setMax(DrivingService.MAX_SPEED_PERCENT);
+        maxSpeedPercentSlider.setProgress(drivingService.getSpeedPercent());
         maxSpeedPercentSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                trexService.setSpeedPercent(progress);
+                drivingService.setSpeedPercent(progress);
             }
 
             @Override
@@ -65,18 +66,17 @@ public class SettingsFragment extends Fragment {
                 // empty for now
             }
         });
-        Log.d(TAG, "max speed percent is initialized");
     }
 
     private void initializeMaxAccelerationPercent() {
         SeekBar maxAccelerationPercentSlider = root.findViewById(R.id.trex_accel_slider);
-        maxAccelerationPercentSlider.setMin(TrexService.MIN_ACCELERATION_PERCENT);
-        maxAccelerationPercentSlider.setMax(TrexService.MAX_ACCELERATION_PERCENT);
-        maxAccelerationPercentSlider.setProgress(trexService.getAccelerationPercent());
+        maxAccelerationPercentSlider.setMin(DrivingService.MIN_ACCELERATION_PERCENT);
+        maxAccelerationPercentSlider.setMax(DrivingService.MAX_ACCELERATION_PERCENT);
+        maxAccelerationPercentSlider.setProgress(drivingService.getAccelerationPercent());
         maxAccelerationPercentSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                trexService.setAccelerationPercent(progress);
+                drivingService.setAccelerationPercent(progress);
             }
 
             @Override
@@ -89,6 +89,5 @@ public class SettingsFragment extends Fragment {
                 // empty for now
             }
         });
-        Log.d(TAG, "max acceleration percent is initialized");
     }
 }

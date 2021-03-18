@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     tools:context=".fragments.SettingsFragment">
 
     <LinearLayout
@@ -22,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="140dp"
-            android:text="@string/trex_max_speed" />
+            android:text="@string/settings_max_speed" />
 
         <SeekBar
             android:id="@+id/trex_speed_slider"
@@ -47,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="140dp"
-            android:text="@string/trex_acceleration" />
+            android:text="@string/settings_acceleration" />
 
         <SeekBar
             android:id="@+id/trex_accel_slider"

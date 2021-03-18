@@ -11,7 +11,7 @@
         android:id="@+id/menu_item_trex"
         android:enabled="true"
         android:icon="@drawable/control_foreground"
-        android:title="@string/menu_trex"
+        android:title="@string/menu_driving"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_item_settings"
