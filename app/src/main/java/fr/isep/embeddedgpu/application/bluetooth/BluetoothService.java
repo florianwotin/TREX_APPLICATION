@@ -30,34 +30,34 @@ public class BluetoothService {
     }
 
     public void connectToDevice(BluetoothDevice bluetoothDevice) {
-        String errorStringFormat = "cannot connect to device %s: %s";
+        String errorStringFormat = "Cannot connect to device %s: %s";
         if(bluetoothAdapter != null) {
             if(bluetoothAdapter.isEnabled()) {
                 // try to create bluetooth socket
                 try {
-                    Log.d(TAG, "trying to create bluetooth socket");
+                    Log.d(TAG, "Trying to create bluetooth socket");
                     //bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord();
                     bluetoothSocket.connect();
-                    Log.d(TAG, "connected to device " + bluetoothDevice.getName());
+                    Log.d(TAG, "Connected to device " + bluetoothDevice.getName());
                 } catch (IOException e) {
                     //Log.e(TAG, String.format("cannot create bluetooth socket from DEVICE[UUID=%s | MAC=%s]", MODULE_BLUETOOTH_UUID.toString(), MODULE_BLUETOOTH_MAC_ADDRESS));
                     e.printStackTrace();
                 }
 
                 // attempt to create handler
-                Log.d(TAG, "attempt to create handler");
+                Log.d(TAG, "Attempt to create handler");
                 handler = new Handler(Looper.getMainLooper()) {
                     @Override
                     public void handleMessage(Message message) {
                         if(message.what == RESPONSE_MESSAGE) {
                             String response = (String)message.obj;
-                            Log.d(TAG, String.format("handler received: \"%s\"", response));
+                            Log.d(TAG, String.format("Handler received: \"%s\"", response));
                         }
                     }
                 };
 
                 // attempt to create and run bluetooth thread
-                Log.d(TAG, "attempt to create and start bluetooth thread");
+                Log.d(TAG, "Attempt to create and start bluetooth thread");
                 bluetoothThread = new BluetoothThread(bluetoothSocket, handler);
                 bluetoothThread.start();
             } else {
@@ -70,7 +70,7 @@ public class BluetoothService {
 
     // Send data with bluetooth thread
     protected void sendData(byte[] bytes) {
-        String errorStringFormat = "cannot send data with bluetooth thread: %s";
+        String errorStringFormat = "Cannot send data with bluetooth thread: %s";
         if(bluetoothAdapter != null) {
             if (bluetoothSocket.isConnected() && (bluetoothThread != null)) {
                 bluetoothThread.write(bytes);

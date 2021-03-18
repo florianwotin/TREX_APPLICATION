@@ -33,4 +33,8 @@
     <string name="settings_max_speed">Vitesse maximale (%)</string>
     <string name="settings_acceleration">Accélération (%)</string>
 
+    <!-- TOAST MESSAGES -->
+    <string name="toast_bluetooth_turn_on">Activation du bluetooth</string>
+    <string name="toast_bluetooth_turn_off">Désactivation du bluetooth</string>
+
 </resources>

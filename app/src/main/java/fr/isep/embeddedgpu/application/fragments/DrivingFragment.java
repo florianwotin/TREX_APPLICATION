@@ -19,7 +19,7 @@ import fr.isep.embeddedgpu.application.driving.DrivingService;
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class DrivingFragment extends Fragment {
-    public static final String TAG = "[TREX FRAGMENT]";
+    public static final String TAG = "[DRIVING FRAGMENT]";
 
     // Services
     protected DrivingService drivingService;
@@ -81,7 +81,6 @@ public class DrivingFragment extends Fragment {
                 drivingService.setStrength(strength);
             }
         });
-        Log.d(TAG, "direction joystick is initialized");
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -117,7 +116,6 @@ public class DrivingFragment extends Fragment {
                 }
             };
         });
-        Log.d(TAG, "moving forward is initialized");
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -152,6 +150,5 @@ public class DrivingFragment extends Fragment {
                 }
             };
         });
-        Log.d(TAG, "moving backward is initialized");
     }
 }

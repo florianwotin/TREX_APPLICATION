@@ -2,8 +2,8 @@ package fr.isep.embeddedgpu.application.requests;
 
 public class RequestsCodes {
     // Request code to enable bluetooth
-    public static final int REQUEST_ENABLE_BLUETOOTH = 1;
+    public static final int REQUEST_ENABLE_BLUETOOTH = 0;
 
     // Request code to enable bluetooth admin
-    public static final int REQUEST_ENABLE_BLUETOOTH_ADMIN = 2;
+    public static final int REQUEST_ENABLE_BLUETOOTH_ADMIN = 1;
 }

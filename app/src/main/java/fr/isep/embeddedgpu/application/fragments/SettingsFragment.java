@@ -46,7 +46,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void initializeMaxSpeedPercent() {
-        SeekBar maxSpeedPercentSlider = root.findViewById(R.id.trex_speed_slider);
+        SeekBar maxSpeedPercentSlider = root.findViewById(R.id.settings_speed_slider);
         maxSpeedPercentSlider.setMin(DrivingService.MIN_SPEED_PERCENT);
         maxSpeedPercentSlider.setMax(DrivingService.MAX_SPEED_PERCENT);
         maxSpeedPercentSlider.setProgress(drivingService.getSpeedPercent());
@@ -69,7 +69,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void initializeMaxAccelerationPercent() {
-        SeekBar maxAccelerationPercentSlider = root.findViewById(R.id.trex_accel_slider);
+        SeekBar maxAccelerationPercentSlider = root.findViewById(R.id.settings_accel_slider);
         maxAccelerationPercentSlider.setMin(DrivingService.MIN_ACCELERATION_PERCENT);
         maxAccelerationPercentSlider.setMax(DrivingService.MAX_ACCELERATION_PERCENT);
         maxAccelerationPercentSlider.setProgress(drivingService.getAccelerationPercent());
