@@ -26,8 +26,8 @@
     <string name="bluetooth_title">Paramétrage du Bluetooth</string>
     <string name="bluetooth_enabled">Bluetooth activé</string>
     <string name="bluetooth_disabled">Bluetooth désactivé</string>
-    <string name="bluetooth_button_discoverable">Discoverable</string>
-    <string name="bluetooth_button_paired_devices">Paired devices</string>
+    <string name="bluetooth_button_discoverable">Rendre détectable</string>
+    <string name="bluetooth_button_paired_devices">Appareils jumelés</string>
 
     <!-- SETTINGS -->
     <string name="settings_max_speed">Vitesse maximale (%)</string>
@@ -35,6 +35,10 @@
 
     <!-- TOAST MESSAGES -->
     <string name="toast_bluetooth_turn_on">Activation du bluetooth</string>
+    <string name="toast_bluetooth_is_on">Bluetooth activé</string>
     <string name="toast_bluetooth_turn_off">Désactivation du bluetooth</string>
+    <string name="toast_bluetooth_is_off">Bluetooth désactivé</string>
+    <string name="toast_bluetooth_make_discoverable">Votre appareil va être rendu détectable</string>
+    <string name="toast_bluetooth_is_discoverable">Appareil détectable</string>
 
 </resources>

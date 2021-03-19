@@ -10,14 +10,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import fr.isep.embeddedgpu.application.R;
 import fr.isep.embeddedgpu.application.bluetooth.BluetoothService;
 
-import static fr.isep.embeddedgpu.application.requests.RequestsCodes.REQUEST_ENABLE_BLUETOOTH;
+import static android.app.Activity.RESULT_OK;
+import static fr.isep.embeddedgpu.application.bluetooth.BluetoothRequestsCodes.REQUEST_MAKE_DISCOVERABLE;
+import static fr.isep.embeddedgpu.application.bluetooth.BluetoothRequestsCodes.REQUEST_TURN_ON_BLUETOOTH;
+import static fr.isep.embeddedgpu.application.utils.ToastUtils.shortToast;
 
 public class BluetoothFragment extends Fragment {
     public static final String TAG = "[BLUETOOTH FRAGMENT]";
@@ -26,13 +28,10 @@ public class BluetoothFragment extends Fragment {
     protected BluetoothService bluetoothService;
 
     // UI
-    View root;
-    Button bluetoothStateButton;
-    TextView bluetoothStateText;
-    ImageView bluetoothStateImage;
-
-    // Flags
-    protected boolean bluetoothActive;
+    protected View root;
+    protected Button bluetoothStateButton;
+    protected TextView bluetoothStateText;
+    protected ImageView bluetoothStateImage;
 
     public BluetoothFragment(BluetoothService bluetoothService) {
         this.bluetoothService = bluetoothService;
@@ -51,9 +50,30 @@ public class BluetoothFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case REQUEST_TURN_ON_BLUETOOTH:
+                if (resultCode == RESULT_OK) {
+                    shortToast(root.getContext(), R.string.toast_bluetooth_is_on).show();
+                    turnOnBluetoothUI();
+                }
+                break;
+            case REQUEST_MAKE_DISCOVERABLE:
+                if (resultCode == RESULT_OK) {
+                    shortToast(root.getContext(), R.string.toast_bluetooth_is_discoverable).show();
+                }
+            default:
+                Log.d(TAG, String.format("Unknown request code %d (with result %d)", requestCode, resultCode));
+                break;
+        }
+    }
+
     private void initialize() {
         Log.d(TAG, "Starting initialization");
         initializeState();
+        initializeDiscoverable();
         Log.d(TAG, "Initialization OK");
     }
 
@@ -62,8 +82,9 @@ public class BluetoothFragment extends Fragment {
         bluetoothStateText = root.findViewById(R.id.bluetooth_state_text);
         bluetoothStateImage = root.findViewById(R.id.bluetooth_state_image);
         bluetoothStateButton.setOnClickListener(v -> {
-            if (bluetoothService.getBluetoothAdapter() != null) {
-                if (bluetoothActive) {
+            BluetoothAdapter bluetoothAdapter = bluetoothService.getBluetoothAdapter();
+            if (bluetoothAdapter != null) {
+                if (bluetoothAdapter.isEnabled()) {
                     turnOffBluetooth();
                 } else {
                     turnOnBluetooth();
@@ -74,40 +95,73 @@ public class BluetoothFragment extends Fragment {
         });
         // default state
         BluetoothAdapter bluetoothAdapter = bluetoothService.getBluetoothAdapter();
-        if (bluetoothAdapter != null) {
-            if (bluetoothAdapter.isEnabled()) {
+        if ((bluetoothAdapter != null) && bluetoothAdapter.isEnabled()) {
                 turnOnBluetoothUI();
-            } else {
-                turnOffBluetoothUI();
-            }
         } else {
             turnOffBluetoothUI();
         }
     }
 
     private void turnOnBluetooth() {
-        Toast.makeText(root.getContext(), R.string.toast_bluetooth_turn_on, Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(intent, REQUEST_ENABLE_BLUETOOTH);
-        turnOnBluetoothUI();
+        BluetoothAdapter bluetoothAdapter = bluetoothService.getBluetoothAdapter();
+        if (bluetoothAdapter != null) {
+            if (!bluetoothAdapter.isEnabled()) {
+                shortToast(root.getContext(), R.string.toast_bluetooth_turn_on).show();
+                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(intent, REQUEST_TURN_ON_BLUETOOTH);
+            } else {
+                Log.d(TAG, "Bluetooth is already on");
+            }
+        } else {
+            Log.e(TAG, "Cannot turn on bluetooth: bluetooth is unavailable (adapter is null)");
+        }
     }
 
     private void turnOnBluetoothUI() {
-        bluetoothActive = true;
         bluetoothStateButton.setText(R.string.button_disable);
         bluetoothStateText.setText(R.string.bluetooth_enabled);
         bluetoothStateImage.setImageResource(R.drawable.bluetooth_enabled_foreground);
     }
 
     private void turnOffBluetooth() {
-        Toast.makeText(root.getContext(), R.string.toast_bluetooth_turn_off, Toast.LENGTH_SHORT).show();
-        turnOffBluetoothUI();
+        BluetoothAdapter bluetoothAdapter = bluetoothService.getBluetoothAdapter();
+        if (bluetoothAdapter != null) {
+            if (bluetoothAdapter.isEnabled()) {
+                shortToast(root.getContext(), R.string.toast_bluetooth_turn_off).show();
+                bluetoothAdapter.disable();
+                shortToast(root.getContext(), R.string.toast_bluetooth_is_off).show();
+            } else {
+                Log.d(TAG, "Bluetooth is already off");
+            }
+        } else {
+            Log.e(TAG, "Cannot turn off bluetooth: bluetooth is unavailable (adapter is null)");
+        }
     }
 
     private void turnOffBluetoothUI() {
-        bluetoothActive = false;
         bluetoothStateButton.setText(R.string.button_enable);
         bluetoothStateText.setText(R.string.bluetooth_disabled);
         bluetoothStateImage.setImageResource(R.drawable.bluetooth_disabled_foreground);
+    }
+
+    private void initializeDiscoverable() {
+        Button discoverableButton = root.findViewById(R.id.bluetooth_discoverable_button);
+        discoverableButton.setOnClickListener(v -> {
+            if (bluetoothService.getBluetoothAdapter() != null) {
+                if (!bluetoothService.getBluetoothAdapter().isDiscovering()) {
+                    makeDeviceDiscoverable();
+                } else {
+                    Log.d(TAG, "Device is already discoverable");
+                }
+            } else {
+                Log.e(TAG, "Cannot make device discoverable: bluetooth is unavailable (adapter is null)");
+            }
+        });
+    }
+
+    private void makeDeviceDiscoverable() {
+        shortToast(root.getContext(), R.string.toast_bluetooth_make_discoverable).show();
+        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        startActivityForResult(intent, REQUEST_MAKE_DISCOVERABLE);
     }
 }

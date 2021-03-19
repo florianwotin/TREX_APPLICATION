@@ -26,8 +26,8 @@ import fr.isep.embeddedgpu.application.fragments.SettingsFragment;
 import fr.isep.embeddedgpu.application.fragments.DrivingFragment;
 import fr.isep.embeddedgpu.application.driving.DrivingService;
 
-import static fr.isep.embeddedgpu.application.requests.RequestsCodes.REQUEST_ENABLE_BLUETOOTH;
-import static fr.isep.embeddedgpu.application.requests.RequestsCodes.REQUEST_ENABLE_BLUETOOTH_ADMIN;
+import static fr.isep.embeddedgpu.application.bluetooth.BluetoothRequestsCodes.REQUEST_ENABLE_BLUETOOTH;
+import static fr.isep.embeddedgpu.application.bluetooth.BluetoothRequestsCodes.REQUEST_ENABLE_BLUETOOTH_ADMIN;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "[MAIN ACTIVITY]";
@@ -58,9 +58,14 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_ENABLE_BLUETOOTH:
                 if (resultCode == RESULT_OK)
                     bluetoothService.setBluetoothEnabled(true);
+                break;
             case REQUEST_ENABLE_BLUETOOTH_ADMIN:
                 if (resultCode == RESULT_OK)
                     bluetoothService.setBluetoothAdminEnabled(true);
+                break;
+            default:
+                Log.d(TAG, String.format("Unknown request code %d (with result %d)", requestCode, resultCode));
+                break;
         }
         // if all bluetooth permissions are OK initialize bluetooth process
         if(bluetoothService.isBluetoothEnabled() && bluetoothService.isBluetoothAdminEnabled()) {
