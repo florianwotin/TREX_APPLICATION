@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkPermissions();
         initialize();
+        checkPermissions();
     }
 
     @Override
@@ -56,12 +56,16 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case REQUEST_ENABLE_BLUETOOTH:
-                if (resultCode == RESULT_OK)
+                if (resultCode == RESULT_OK) {
                     bluetoothService.setBluetoothEnabled(true);
+                    Log.d(TAG, "Bluetooth is enabled");
+                }
                 break;
             case REQUEST_ENABLE_BLUETOOTH_ADMIN:
-                if (resultCode == RESULT_OK)
+                if (resultCode == RESULT_OK) {
                     bluetoothService.setBluetoothAdminEnabled(true);
+                    Log.d(TAG, "Bluetooth admin is enabled");
+                }
                 break;
             default:
                 Log.d(TAG, String.format("Unknown request code %d (with result %d)", requestCode, resultCode));
@@ -75,16 +79,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkPermissions() {
+        int permission;
         // bluetooth permission
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_DENIED) {
-            Log.d(TAG, "Bluetooth permission denied: send permission request");
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH}, REQUEST_ENABLE_BLUETOOTH);
+        Log.d(TAG, "Checking Bluetooth permission");
+        permission = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH);
+        switch(permission) {
+            case PackageManager.PERMISSION_DENIED:
+                Log.d(TAG, "Bluetooth permission denied: send permission request");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH}, REQUEST_ENABLE_BLUETOOTH);
+                break;
+            case PackageManager.PERMISSION_GRANTED:
+                Log.d(TAG, "Bluetooth permission granted");
+                break;
+            default:
+                Log.d(TAG, String.format("Unknown state for Bluetooth permission (%d)", permission));
+                break;
         }
 
         // admin bluetooth permission
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_DENIED) {
-            Log.d(TAG, "Admin bluetooth permission denied: send permission request");
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ENABLE_BLUETOOTH_ADMIN);
+        Log.d(TAG, "Checking Bluetooth Admin permission");
+        permission = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN);
+        switch(permission) {
+            case PackageManager.PERMISSION_DENIED:
+                Log.d(TAG, "Bluetooth Admin permission denied: send permission request");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ENABLE_BLUETOOTH_ADMIN);
+                break;
+            case PackageManager.PERMISSION_GRANTED:
+                Log.d(TAG, "Bluetooth Admin permission granted");
+                break;
+            default:
+                Log.d(TAG, String.format("Unknown state for Bluetooth Admin permission (%d)", permission));
+                break;
         }
     }
 

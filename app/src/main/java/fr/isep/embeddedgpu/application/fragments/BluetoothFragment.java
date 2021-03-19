@@ -58,12 +58,18 @@ public class BluetoothFragment extends Fragment {
                 if (resultCode == RESULT_OK) {
                     shortToast(root.getContext(), R.string.toast_bluetooth_is_on).show();
                     turnOnBluetoothUI();
+                } else {
+                    shortToast(root.getContext(), R.string.toast_bluetooth_turn_on_refused).show();
+                    turnOffBluetoothUI();
                 }
                 break;
             case REQUEST_MAKE_DISCOVERABLE:
                 if (resultCode == RESULT_OK) {
                     shortToast(root.getContext(), R.string.toast_bluetooth_is_discoverable).show();
+                } else {
+                    shortToast(root.getContext(), R.string.toast_bluetooth_make_discoverable_refused).show();
                 }
+                break;
             default:
                 Log.d(TAG, String.format("Unknown request code %d (with result %d)", requestCode, resultCode));
                 break;
@@ -129,6 +135,7 @@ public class BluetoothFragment extends Fragment {
             if (bluetoothAdapter.isEnabled()) {
                 shortToast(root.getContext(), R.string.toast_bluetooth_turn_off).show();
                 bluetoothAdapter.disable();
+                turnOffBluetoothUI();
                 shortToast(root.getContext(), R.string.toast_bluetooth_is_off).show();
             } else {
                 Log.d(TAG, "Bluetooth is already off");

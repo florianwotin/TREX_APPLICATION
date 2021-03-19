@@ -23,7 +23,6 @@
     <string name="driving_recording_disabled">Enregistrement désactivé</string>
 
     <!-- BLUETOOTH -->
-    <string name="bluetooth_title">Paramétrage du Bluetooth</string>
     <string name="bluetooth_enabled">Bluetooth activé</string>
     <string name="bluetooth_disabled">Bluetooth désactivé</string>
     <string name="bluetooth_button_discoverable">Rendre détectable</string>
@@ -34,11 +33,13 @@
     <string name="settings_acceleration">Accélération (%)</string>
 
     <!-- TOAST MESSAGES -->
-    <string name="toast_bluetooth_turn_on">Activation du bluetooth</string>
+    <string name="toast_bluetooth_turn_on">Activation du Bluetooth</string>
+    <string name="toast_bluetooth_turn_on_refused">Le Bluetooth n\'a pas été activé</string>
     <string name="toast_bluetooth_is_on">Bluetooth activé</string>
-    <string name="toast_bluetooth_turn_off">Désactivation du bluetooth</string>
+    <string name="toast_bluetooth_turn_off">Désactivation du Bluetooth</string>
     <string name="toast_bluetooth_is_off">Bluetooth désactivé</string>
     <string name="toast_bluetooth_make_discoverable">Votre appareil va être rendu détectable</string>
+    <string name="toast_bluetooth_make_discoverable_refused">Votre appareil n\'a pas été rendu détectable</string>
     <string name="toast_bluetooth_is_discoverable">Appareil détectable</string>
 
 </resources>
