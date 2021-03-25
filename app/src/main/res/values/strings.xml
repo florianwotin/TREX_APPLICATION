@@ -6,6 +6,10 @@
     <string name="app_driving_fragment">CONDUIRE</string>
     <string name="app_settings_fragment">PARAMETRES</string>
 
+    <!-- DIALOG -->
+    <string name="dialog_bluetooth_devices_title">Appareils Bluetooth disponibles</string>
+    <string name="dialog_bluetooth_devices_no_dev">Aucun appareil Bluetooth disponible…</string>
+
     <!-- BOTTOM MENU BAR -->
     <string name="menu_bluetooth">Bluetooth</string>
     <string name="menu_driving">Conduire</string>
@@ -15,6 +19,7 @@
     <string name="button_enable">Activer</string>
     <string name="button_disable">Désactiver</string>
     <string name="button_modify">Modifier</string>
+    <string name="button_cancel">Annuler</string>
     <string name="button_move_forward">Avancer</string>
     <string name="button_move_backward">Reculer</string>
 
@@ -26,17 +31,17 @@
     <string name="bluetooth_enabled">Bluetooth activé</string>
     <string name="bluetooth_disabled">Bluetooth désactivé</string>
     <string name="bluetooth_button_discoverable">Rendre détectable</string>
-    <string name="bluetooth_button_paired_devices">Appareils jumelés</string>
+    <string name="bluetooth_button_devices">Appareils Bluetooth disponibles</string>
 
     <!-- SETTINGS -->
     <string name="settings_max_speed">Vitesse maximale (%)</string>
     <string name="settings_acceleration">Accélération (%)</string>
 
     <!-- TOAST MESSAGES -->
-    <string name="toast_bluetooth_turn_on">Activation du Bluetooth</string>
+    <string name="toast_bluetooth_turn_on">Demande d\'activation du Bluetooth</string>
     <string name="toast_bluetooth_turn_on_refused">Le Bluetooth n\'a pas été activé</string>
     <string name="toast_bluetooth_is_on">Bluetooth activé</string>
-    <string name="toast_bluetooth_turn_off">Désactivation du Bluetooth</string>
+    <string name="toast_bluetooth_turn_off">Demande de désactivation du Bluetooth</string>
     <string name="toast_bluetooth_is_off">Bluetooth désactivé</string>
     <string name="toast_bluetooth_make_discoverable">Votre appareil va être rendu détectable</string>
     <string name="toast_bluetooth_make_discoverable_refused">Votre appareil n\'a pas été rendu détectable</string>

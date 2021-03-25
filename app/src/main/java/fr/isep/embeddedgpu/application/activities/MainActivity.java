@@ -21,13 +21,13 @@ import java.util.Objects;
 
 import fr.isep.embeddedgpu.application.R;
 import fr.isep.embeddedgpu.application.bluetooth.BluetoothService;
-import fr.isep.embeddedgpu.application.fragments.BluetoothFragment;
-import fr.isep.embeddedgpu.application.fragments.SettingsFragment;
-import fr.isep.embeddedgpu.application.fragments.DrivingFragment;
 import fr.isep.embeddedgpu.application.driving.DrivingService;
+import fr.isep.embeddedgpu.application.fragments.BluetoothFragment;
+import fr.isep.embeddedgpu.application.fragments.DrivingFragment;
+import fr.isep.embeddedgpu.application.fragments.SettingsFragment;
 
-import static fr.isep.embeddedgpu.application.bluetooth.BluetoothRequestsCodes.REQUEST_ENABLE_BLUETOOTH;
-import static fr.isep.embeddedgpu.application.bluetooth.BluetoothRequestsCodes.REQUEST_ENABLE_BLUETOOTH_ADMIN;
+import static fr.isep.embeddedgpu.application.bluetooth.BluetoothService.REQUEST_ENABLE_BLUETOOTH;
+import static fr.isep.embeddedgpu.application.bluetooth.BluetoothService.REQUEST_ENABLE_BLUETOOTH_ADMIN;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "[MAIN ACTIVITY]";
@@ -56,25 +56,22 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case REQUEST_ENABLE_BLUETOOTH:
-                if (resultCode == RESULT_OK) {
-                    bluetoothService.setBluetoothEnabled(true);
-                    Log.d(TAG, "Bluetooth is enabled");
+                if (resultCode == RESULT_CANCELED) {
+                    Log.d(TAG, "Bluetooth permission not granted");
+                } else {
+                    Log.d(TAG, "Bluetooth permission granted");
                 }
                 break;
             case REQUEST_ENABLE_BLUETOOTH_ADMIN:
-                if (resultCode == RESULT_OK) {
-                    bluetoothService.setBluetoothAdminEnabled(true);
-                    Log.d(TAG, "Bluetooth admin is enabled");
+                if (resultCode == RESULT_CANCELED) {
+                    Log.d(TAG, "Bluetooth admin permission not granted");
+                } else {
+                    Log.d(TAG, "Bluetooth admin permission granted");
                 }
                 break;
             default:
-                Log.d(TAG, String.format("Unknown request code %d (with result %d)", requestCode, resultCode));
+                Log.d(TAG, String.format("Unknown request code %d (with result code %d)", requestCode, resultCode));
                 break;
-        }
-        // if all bluetooth permissions are OK initialize bluetooth process
-        if(bluetoothService.isBluetoothEnabled() && bluetoothService.isBluetoothAdminEnabled()) {
-            Log.d(TAG, "Starting bluetooth process: both bluetooth and admin bluetooth permissions are OK");
-            //bluetoothService.initializeBluetoothProcess();
         }
     }
 
@@ -122,8 +119,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeServices() {
-        initializeBluetoothService();
-        initializeDrivingService();
+        bluetoothService = new BluetoothService();
+        drivingService = new DrivingService();
+        //initializeBluetoothService();
+        //initializeDrivingService();
     }
 
     private void initializeBluetoothService() {

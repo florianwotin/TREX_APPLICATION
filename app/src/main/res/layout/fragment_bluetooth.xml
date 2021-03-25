@@ -51,17 +51,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/bluetooth_button_discoverable"
-        app:layout_constraintBottom_toTopOf="@+id/bluetooth_paired_devices_button"
+        app:layout_constraintBottom_toTopOf="@+id/bluetooth_devices_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bluetooth_state_layout" />
 
     <Button
-        android:id="@+id/bluetooth_paired_devices_button"
+        android:id="@+id/bluetooth_devices_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/bluetooth_button_paired_devices"
+        android:text="@string/bluetooth_button_devices"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bluetooth_discoverable_button" />

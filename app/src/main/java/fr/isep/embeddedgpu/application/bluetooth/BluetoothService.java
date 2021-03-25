@@ -15,18 +15,25 @@ import static fr.isep.embeddedgpu.application.bluetooth.BluetoothThread.RESPONSE
 public class BluetoothService {
     private static final String TAG = "[BLUETOOTH SERVICE]";
 
+    // Requests
+    public static final int REQUEST_ENABLE_BLUETOOTH = 0;
+    public static final int REQUEST_ENABLE_BLUETOOTH_ADMIN = 1;
+    public static final int REQUEST_TURN_ON_BLUETOOTH = 2;
+    public static final int REQUEST_MAKE_DISCOVERABLE = 3;
+
     // Bluetooth
     protected BluetoothAdapter bluetoothAdapter;
     protected BluetoothSocket bluetoothSocket;
     protected BluetoothThread bluetoothThread;
     protected Handler handler;
 
-    // Flags
-    protected boolean isBluetoothEnabled = false;
-    protected boolean isBluetoothAdminEnabled = false;
-
     public BluetoothService() {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(this.bluetoothAdapter != null){
+            Log.d(TAG, "bluetooth is available");
+        } else {
+            Log.d(TAG, "bluetooth is unavailable (adapter is null)");
+        }
     }
 
     public void connectToDevice(BluetoothDevice bluetoothDevice) {
@@ -84,21 +91,5 @@ public class BluetoothService {
 
     public BluetoothAdapter getBluetoothAdapter() {
         return bluetoothAdapter;
-    }
-
-    public boolean isBluetoothEnabled() {
-        return isBluetoothEnabled;
-    }
-
-    public void setBluetoothEnabled(boolean bluetoothEnabled) {
-        isBluetoothEnabled = bluetoothEnabled;
-    }
-
-    public boolean isBluetoothAdminEnabled() {
-        return isBluetoothAdminEnabled;
-    }
-
-    public void setBluetoothAdminEnabled(boolean bluetoothAdminEnabled) {
-        isBluetoothAdminEnabled = bluetoothAdminEnabled;
     }
 }
