@@ -62,26 +62,27 @@ public class BluetoothFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String debugStrFormat = "onActivityResult => %s is %s (requestCode = %d, resultCode = %d)";
         switch(requestCode) {
             case REQUEST_TURN_ON_BLUETOOTH:
                 if (resultCode == RESULT_CANCELED) {
                     shortToast(this.getContext(), R.string.toast_bluetooth_turn_on_refused).show();
                     turnOffBluetoothUI();
-                    Log.d(TAG, String.format(debugStrFormat, "REQUEST_TURN_ON_BLUETOOTH", "KO", requestCode, resultCode));
                 } else {
                     shortToast(this.getContext(), R.string.toast_bluetooth_is_on).show();
                     turnOnBluetoothUI();
-                    Log.d(TAG, String.format(debugStrFormat, "REQUEST_TURN_ON_BLUETOOTH", "OK", requestCode, resultCode));
                 }
                 break;
             case REQUEST_MAKE_DISCOVERABLE:
                 if (resultCode == RESULT_CANCELED) {
                     shortToast(this.getContext(), R.string.toast_bluetooth_make_discoverable_refused).show();
-                    Log.d(TAG, String.format(debugStrFormat, "REQUEST_MAKE_DISCOVERABLE", "KO", requestCode, resultCode));
                 } else {
+                    // if bluetooth is disabled, this request will enable it so update UI
+                    if (bluetoothService.getBluetoothAdapter().isEnabled()) {
+                        shortToast(this.getContext(), R.string.toast_bluetooth_is_on).show();
+                        turnOnBluetoothUI();
+                    }
+                    // display device is discoverable
                     shortToast(this.getContext(), R.string.toast_bluetooth_is_discoverable).show();
-                    Log.d(TAG, String.format(debugStrFormat, "REQUEST_MAKE_DISCOVERABLE", "OK", requestCode, resultCode));
                 }
                 break;
             default:
