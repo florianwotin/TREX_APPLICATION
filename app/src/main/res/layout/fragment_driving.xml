@@ -66,7 +66,6 @@
             app:JV_buttonSizeRatio="20%"
             app:JV_fixedCenter="false"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/driving_controls_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -78,7 +77,6 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/driving_joystick_direction"
             app:layout_constraintTop_toTopOf="parent">
 
             <Button

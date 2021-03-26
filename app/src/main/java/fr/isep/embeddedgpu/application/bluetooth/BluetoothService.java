@@ -1,14 +1,21 @@
 package fr.isep.embeddedgpu.application.bluetooth;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
+import java.util.UUID;
 
 import static fr.isep.embeddedgpu.application.bluetooth.BluetoothThread.RESPONSE_MESSAGE;
 
@@ -27,6 +34,9 @@ public class BluetoothService {
     protected BluetoothThread bluetoothThread;
     protected Handler handler;
 
+    // Phone
+    protected UUID phoneUUID;
+
     public BluetoothService() {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(this.bluetoothAdapter != null){
@@ -34,20 +44,22 @@ public class BluetoothService {
         } else {
             Log.d(TAG, "bluetooth is unavailable (adapter is null)");
         }
+        phoneUUID = UUID.randomUUID();
+        Log.d(TAG, String.format("Phone UUID is %s", phoneUUID.toString()));
     }
 
-    public void connectToDevice(BluetoothDevice bluetoothDevice) {
-        String errorStringFormat = "Cannot connect to device %s: %s";
+    public void connectToDevice(BluetoothDevice btDev) {
+        String errorStringFormat = "Cannot connect to device %s (%s): %s";
         if(bluetoothAdapter != null) {
             if(bluetoothAdapter.isEnabled()) {
                 // try to create bluetooth socket
                 try {
                     Log.d(TAG, "Trying to create bluetooth socket");
-                    //bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord();
+                    bluetoothSocket = btDev.createRfcommSocketToServiceRecord(phoneUUID);
                     bluetoothSocket.connect();
-                    Log.d(TAG, "Connected to device " + bluetoothDevice.getName());
+                    Log.d(TAG, String.format("Connected to device %s (%s)", btDev.getName(), btDev.getAddress()));
                 } catch (IOException e) {
-                    //Log.e(TAG, String.format("cannot create bluetooth socket from DEVICE[UUID=%s | MAC=%s]", MODULE_BLUETOOTH_UUID.toString(), MODULE_BLUETOOTH_MAC_ADDRESS));
+                    Log.e(TAG, String.format("Cannot create bluetooth socket from device %s (%s) with UUID = %s", btDev.getName(), btDev.getAddress(), phoneUUID.toString()));
                     e.printStackTrace();
                 }
 
@@ -68,10 +80,16 @@ public class BluetoothService {
                 bluetoothThread = new BluetoothThread(bluetoothSocket, handler);
                 bluetoothThread.start();
             } else {
-                Log.e(TAG, String.format(errorStringFormat, bluetoothDevice.getName(), "bluetooth is disabled"));
+                Log.e(TAG, String.format(errorStringFormat, btDev.getName(), btDev.getAddress(), "bluetooth is disabled"));
             }
         } else {
-            Log.e(TAG, String.format(errorStringFormat, bluetoothDevice.getName(), "bluetooth is unavailable (adapter is null)"));
+            Log.e(TAG, String.format(errorStringFormat, btDev.getName(), btDev.getAddress(), "bluetooth is unavailable (adapter is null)"));
+        }
+    }
+
+    public void disconnectFromDevice() {
+        if (bluetoothThread != null) {
+            bluetoothThread.cancel();
         }
     }
 

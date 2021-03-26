@@ -18,6 +18,8 @@
     <!-- BUTTONS -->
     <string name="button_enable">Activer</string>
     <string name="button_disable">Désactiver</string>
+    <string name="button_connect">Connecter</string>
+    <string name="button_disconnect">Déconnecter</string>
     <string name="button_modify">Modifier</string>
     <string name="button_cancel">Annuler</string>
     <string name="button_move_forward">Avancer</string>
@@ -30,6 +32,7 @@
     <!-- BLUETOOTH -->
     <string name="bluetooth_enabled">Bluetooth activé</string>
     <string name="bluetooth_disabled">Bluetooth désactivé</string>
+    <string name="bluetooth_no_connected_device">Connecté à aucun appareil</string>
     <string name="bluetooth_button_discoverable">Rendre détectable</string>
     <string name="bluetooth_button_devices">Appareils Bluetooth disponibles</string>
 
@@ -38,13 +41,11 @@
     <string name="settings_acceleration">Accélération (%)</string>
 
     <!-- TOAST MESSAGES -->
-    <string name="toast_bluetooth_turn_on">Demande d\'activation du Bluetooth</string>
     <string name="toast_bluetooth_turn_on_refused">Le Bluetooth n\'a pas été activé</string>
     <string name="toast_bluetooth_is_on">Bluetooth activé</string>
-    <string name="toast_bluetooth_turn_off">Demande de désactivation du Bluetooth</string>
     <string name="toast_bluetooth_is_off">Bluetooth désactivé</string>
-    <string name="toast_bluetooth_make_discoverable">Votre appareil va être rendu détectable</string>
     <string name="toast_bluetooth_make_discoverable_refused">Votre appareil n\'a pas été rendu détectable</string>
     <string name="toast_bluetooth_is_discoverable">Appareil détectable</string>
+    <string name="toast_bluetooth_cannot_display_devices">Bluetooth désactivé: liste des appareils indisponible</string>
 
 </resources>

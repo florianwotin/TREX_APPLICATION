@@ -3,7 +3,6 @@ package fr.isep.embeddedgpu.application.fragments;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +19,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import fr.isep.embeddedgpu.application.R;
@@ -39,7 +39,9 @@ public class BluetoothFragment extends Fragment {
     // UI
     protected View root;
     protected Button bluetoothStateButton;
+    protected Button disconnectDeviceButton;
     protected TextView bluetoothStateText;
+    protected TextView connectedDeviceText;
     protected ImageView bluetoothStateImage;
 
     public BluetoothFragment(BluetoothService bluetoothService) {
@@ -78,7 +80,6 @@ public class BluetoothFragment extends Fragment {
                 } else {
                     // if bluetooth is disabled, this request will enable it so update UI
                     if (bluetoothService.getBluetoothAdapter().isEnabled()) {
-                        shortToast(this.getContext(), R.string.toast_bluetooth_is_on).show();
                         turnOnBluetoothUI();
                     }
                     // display device is discoverable
@@ -93,13 +94,14 @@ public class BluetoothFragment extends Fragment {
 
     private void initialize() {
         Log.d(TAG, "Starting initialization");
-        initializeState();
-        initializeDiscoverable();
-        initializeBluetoothDevices();
+        initializeStateView();
+        initializeConnectedDeviceView();
+        initializeDiscoverableView();
+        initializeBluetoothDevicesView();
         Log.d(TAG, "Initialization OK");
     }
 
-    private void initializeState() {
+    private void initializeStateView() {
         bluetoothStateButton = root.findViewById(R.id.bluetooth_state_button);
         bluetoothStateText = root.findViewById(R.id.bluetooth_state_text);
         bluetoothStateImage = root.findViewById(R.id.bluetooth_state_image);
@@ -115,6 +117,7 @@ public class BluetoothFragment extends Fragment {
                 Log.e(TAG, "Cannot switch bluetooth state: bluetooth is unavailable (adapter is null)");
             }
         });
+
         // default state: check if bluetooth is available and already enabled
         BluetoothAdapter bluetoothAdapter = bluetoothService.getBluetoothAdapter();
         if ((bluetoothAdapter != null) && bluetoothAdapter.isEnabled()) {
@@ -128,7 +131,6 @@ public class BluetoothFragment extends Fragment {
         BluetoothAdapter bluetoothAdapter = bluetoothService.getBluetoothAdapter();
         if (bluetoothAdapter != null) {
             if (!bluetoothAdapter.isEnabled()) {
-                shortToast(this.getContext(), R.string.toast_bluetooth_turn_on).show();
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(intent, REQUEST_TURN_ON_BLUETOOTH);
             } else {
@@ -149,7 +151,6 @@ public class BluetoothFragment extends Fragment {
         BluetoothAdapter bluetoothAdapter = bluetoothService.getBluetoothAdapter();
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled()) {
-                shortToast(this.getContext(), R.string.toast_bluetooth_turn_off).show();
                 bluetoothAdapter.disable();
                 turnOffBluetoothUI();
                 shortToast(this.getContext(), R.string.toast_bluetooth_is_off).show();
@@ -167,7 +168,18 @@ public class BluetoothFragment extends Fragment {
         bluetoothStateImage.setImageResource(R.drawable.bluetooth_disabled_foreground);
     }
 
-    private void initializeDiscoverable() {
+    private void initializeConnectedDeviceView() {
+        connectedDeviceText = root.findViewById(R.id.bluetooth_connected_dev_text);
+        disconnectDeviceButton = root.findViewById(R.id.bluetooth_connected_dev_disconnect_button);
+        disconnectDeviceButton.setVisibility(View.GONE);
+        disconnectDeviceButton.setOnClickListener(v -> {
+            bluetoothService.disconnectFromDevice();
+            connectedDeviceText.setText(R.string.bluetooth_no_connected_device);
+            disconnectDeviceButton.setVisibility(View.GONE);
+        });
+    }
+
+    private void initializeDiscoverableView() {
         Button discoverableButton = root.findViewById(R.id.bluetooth_discoverable_button);
         discoverableButton.setOnClickListener(v -> {
             if (bluetoothService.getBluetoothAdapter() != null) {
@@ -183,12 +195,11 @@ public class BluetoothFragment extends Fragment {
     }
 
     private void makeDeviceDiscoverable() {
-        shortToast(this.getContext(), R.string.toast_bluetooth_make_discoverable).show();
         Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         startActivityForResult(intent, REQUEST_MAKE_DISCOVERABLE);
     }
 
-    private void initializeBluetoothDevices() {
+    private void initializeBluetoothDevicesView() {
         Button bluetoothDevicesButton = root.findViewById(R.id.bluetooth_devices_button);
         bluetoothDevicesButton.setOnClickListener(v -> {
             if (bluetoothService.getBluetoothAdapter() != null) {
@@ -197,9 +208,11 @@ public class BluetoothFragment extends Fragment {
                     displayBluetoothDevicesPopup();
                 } else {
                     Log.d(TAG, "Cannot display bluetooth devices: bluetooth is disabled");
+                    shortToast(this.getContext(), R.string.toast_bluetooth_cannot_display_devices).show();
                 }
             } else {
                 Log.e(TAG, "Cannot display bluetooth devices: bluetooth is unavailable (adapter is null)");
+                shortToast(this.getContext(), R.string.toast_bluetooth_cannot_display_devices).show();
             }
         });
     }
@@ -214,26 +227,41 @@ public class BluetoothFragment extends Fragment {
             // if no bonded device is returned, display no device text in alert dialog message
             Log.d(TAG, "There is no bonded device available");
             builder.setMessage(R.string.dialog_bluetooth_devices_no_dev);
+            builder.create();
         } else {
             // if one or more bonded device/s is/are returned, display list
             Log.d(TAG, String.format("There is/are %d bonded device/s available", btDevices.size()));
             ListView listView = new ListView(this.getContext());
             listView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            ArrayAdapter<BluetoothDevice> adapter = new ArrayAdapter<BluetoothDevice>(this.getContext(), android.R.layout.simple_list_item_1, android.R.id.text1, new ArrayList<>(btDevices));
-            listView.setAdapter(adapter);
             builder.setView(listView);
+            AlertDialog popup = builder.create();
+            setOnListViewItemClickListener(listView, popup, new ArrayList<BluetoothDevice>(btDevices));
         }
         
-        // button to cancel
-        builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
+        // add button to cancel and show
+        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+    private void setOnListViewItemClickListener(ListView listView, AlertDialog popup, List<BluetoothDevice> btDevices) {
+        // crete a list with names + address
+        List<String> devicesNames = new ArrayList<String>();
+        btDevices.forEach(btDev -> {
+            devicesNames.add(String.format("%s (%s)", btDev.getName(), btDev.getAddress()));
         });
 
-        // create and show
-        builder.create();
-        builder.show();
+        // on item click callback
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            BluetoothDevice deviceToConnect = btDevices.get(position);
+            shortToast(this.getContext(), String.format("Connecting to device %s (%s)", deviceToConnect.getName(), deviceToConnect.getAddress())).show();
+            bluetoothService.connectToDevice(deviceToConnect);
+            disconnectDeviceButton.setVisibility(View.VISIBLE);
+            connectedDeviceText.setText(String.format("Connecté à l'appareil %s (%s)", deviceToConnect.getName(), deviceToConnect.getAddress()));
+            popup.dismiss();
+        });
+
+        // set adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, android.R.id.text1, devicesNames);
+        listView.setAdapter(adapter);
     }
 }

@@ -28,7 +28,7 @@ public class BluetoothThread extends Thread {
     protected final OutputStream outputStream;
 
     // Private instance attributes
-    private Handler handler;
+    private final Handler handler;
 
     // Constructor
     public BluetoothThread(BluetoothSocket socket, Handler handler) {
