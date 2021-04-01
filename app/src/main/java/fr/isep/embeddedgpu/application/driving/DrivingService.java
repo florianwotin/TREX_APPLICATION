@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.UUID;
 
 public class DrivingService {
-    private static final String TAG = "[TREX SERVICE]";
+    private static final String TAG = "[DRIVING SERVICE]";
 
     // Driving constants
     public static final int MIN_SPEED = 0;
@@ -82,7 +82,7 @@ public class DrivingService {
         tram[0] = (byte) 0x0F;
         tram[1] = getLeftSpeed(newSpeed, rationRL);
         tram[2] = getRightSpeed(newSpeed, rationRL);
-        Log.d(TAG, String.format("moving forward : speed=%d ; accel=%d ; tram[0]=%x ; tram[1]=%d ; tram[2]=%d", speedPercent, accelerationPercent, tram[0], tram[1], tram[2]));
+        Log.d(TAG, String.format("moving forward : speed percent=%d ; acceleration percent=%d ; tram[0]=%x ; tram[1]=%d ; tram[2]=%d", speedPercent, accelerationPercent, tram[0], tram[1], tram[2]));
         return tram;
     }
 
