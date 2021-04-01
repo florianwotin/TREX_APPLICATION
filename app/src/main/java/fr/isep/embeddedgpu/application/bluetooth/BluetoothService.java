@@ -94,7 +94,7 @@ public class BluetoothService {
     }
 
     // Send data with bluetooth thread
-    protected void sendData(byte[] bytes) {
+    public void sendData(byte[] bytes) {
         String errorStringFormat = "Cannot send data with bluetooth thread: %s";
         if(bluetoothAdapter != null) {
             if (bluetoothSocket.isConnected() && (bluetoothThread != null)) {

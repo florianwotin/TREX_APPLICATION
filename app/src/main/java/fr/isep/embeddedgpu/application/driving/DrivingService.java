@@ -7,7 +7,7 @@ import java.util.UUID;
 public class DrivingService {
     private static final String TAG = "[TREX SERVICE]";
 
-    // Public class attributes
+    // Driving constants
     public static final int MIN_SPEED = 0;
     public static final int MAX_SPEED = 255;
     public static final int MIN_SPEED_PERCENT = 0;
@@ -15,13 +15,6 @@ public class DrivingService {
     public static final int ACCELERATION = 10;
     public static final int MIN_ACCELERATION_PERCENT = 0;
     public static final int MAX_ACCELERATION_PERCENT = 100;
-    public static final int SEND_PERIOD_MS = 100;
-    public static final int DIRECTION_MOVE_FORWARD = 1;
-    public static final int DIRECTION_MOVE_BACKWARD = -1;
-
-    // Protected class attributes
-    protected static final String MODULE_BLUETOOTH_MAC_ADDRESS = "";
-    protected static final UUID MODULE_BLUETOOTH_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
     // Private instance attributes
     private int previousSpeed;
@@ -50,11 +43,11 @@ public class DrivingService {
     }
 
     protected void updateMaxSpeed() {
-        maxSpeed = (MAX_SPEED * (speedPercent / 100)) + 127;
+        maxSpeed = ((MAX_SPEED - 127) * (speedPercent / 100)) + 127;
     }
 
     protected void updateMinSpeed() {
-        minSpeed = (MIN_SPEED * (speedPercent / 100)) + 127;
+        minSpeed = ((MIN_SPEED - 127) * (speedPercent / 100)) + 127;
     }
 
     protected void updateAcceleration() {
@@ -63,39 +56,34 @@ public class DrivingService {
 
     protected int getNewSpeed() {
         int newSpeed = previousSpeed + acceleration;
+        previousSpeed = newSpeed;
         if (newSpeed < minSpeed) {
             return minSpeed;
         } else return Math.min(newSpeed, maxSpeed);
     }
 
-    protected byte getLeftSpeed() {
-        // TODO
-        return 0;
+    protected byte getLeftSpeed(int speed, double rationRL) {
+        int leftSpeed = (int) ((speed * (1 - rationRL)) / 2);
+        return (byte) leftSpeed;
     }
 
-    protected byte getRightSpeed() {
-        // TODO
-        return 0;
+    protected byte getRightSpeed(int speed, double rationRL) {
+        int rightSpeed = (int) ((speed * (1 + rationRL)) / 2);
+        return (byte) rightSpeed;
     }
 
-    protected byte[] buildTramToMove(){
+    public byte[] buildTramToMove(){
+        // get new speed and ratio Right over Left
         int newSpeed = getNewSpeed();
-        double strengthX = Math.cos(angle)*strength;
-        // init tram
+        double rationRL = (Math.cos(angle) * strength) / 100;
+
+        // build tram
         byte[] tram = new byte[3];
-        tram[0] = (byte) 0xFF;
-        // get speed for each side
-        tram[1] = getLeftSpeed();
-        tram[2] = getRightSpeed();
+        tram[0] = (byte) 0x0F;
+        tram[1] = getLeftSpeed(newSpeed, rationRL);
+        tram[2] = getRightSpeed(newSpeed, rationRL);
+        Log.d(TAG, String.format("moving forward : speed=%d ; accel=%d ; tram[0]=%x ; tram[1]=%d ; tram[2]=%d", speedPercent, accelerationPercent, tram[0], tram[1], tram[2]));
         return tram;
-    }
-
-    public void moveForward() {
-        Log.d(TAG, String.format("moving forward with speed=%d and accel=%d", speedPercent, accelerationPercent));
-    }
-
-    public void moveBackward() {
-        Log.d(TAG, String.format("moving backward with speed=%d and accel=%d", speedPercent, accelerationPercent));
     }
 
     public boolean isRecording() {

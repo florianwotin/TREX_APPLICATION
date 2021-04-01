@@ -16,18 +16,13 @@ import java.util.Arrays;
 // Link to the original class : https://github.com/serge144/ArduinoConnectorBT/blob/master/java/projects/pers/sbp/ardcon/ConnectedThread.java
 
 public class BluetoothThread extends Thread {
-    // Private class attributes
     private static final String TAG = "[BLUETOOTH THREAD]";
 
-    // Public class attributes
+    // Communication
     public static final int RESPONSE_MESSAGE = 10;
-
-    // Protected instance attributes
     protected final BluetoothSocket socket;
     protected final InputStream inputStream;
     protected final OutputStream outputStream;
-
-    // Private instance attributes
     private final Handler handler;
 
     // Constructor

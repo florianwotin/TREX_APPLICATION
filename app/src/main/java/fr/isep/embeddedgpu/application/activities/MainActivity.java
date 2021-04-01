@@ -3,7 +3,6 @@ package fr.isep.embeddedgpu.application.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -103,44 +102,19 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Starting initialization");
         initializeServices();
         initializeFragments();
-        initializeUI();
+        initializeNavigation();
         Log.d(TAG, "Initialization OK");
     }
 
     private void initializeServices() {
         bluetoothService = new BluetoothService();
         drivingService = new DrivingService();
-        //initializeBluetoothService();
-        //initializeDrivingService();
-    }
-
-    private void initializeBluetoothService() {
-        bluetoothService = new BluetoothService();
-        Log.d(TAG, "trying to get bluetooth adapter");
-        if (bluetoothService.getBluetoothAdapter() != null) {
-            Log.d(TAG, "checking if bluetooth is enabled");
-            if(!bluetoothService.getBluetoothAdapter().isEnabled()) {
-                Log.d(TAG, "bluetooth is disabled, asking user to enable it");
-                // if bluetooth is not enabled create intent for user to turn it on
-                Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBluetoothIntent, REQUEST_ENABLE_BLUETOOTH);
-            } else {
-                Log.d(TAG, "bluetooth is enabled");
-                //trexService.initializeBluetoothProcess();
-            }
-        } else {
-            Log.e(TAG, "error occurred while activating bluetooth: bluetooth adapter is null");
-        }
-    }
-
-    private void initializeDrivingService() {
-        drivingService = new DrivingService();
     }
 
     private void initializeFragments() {
         // instantiate each fragment
         bluetoothFragment = new BluetoothFragment(bluetoothService);
-        drivingFragment = new DrivingFragment(drivingService);
+        drivingFragment = new DrivingFragment(bluetoothService, drivingService);
         settingsFragment = new SettingsFragment(drivingService);
         // declare default active fragment
         activeFragment = bluetoothFragment;
@@ -168,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("NonConstantResourceId")
-    private void initializeUI() {
+    private void initializeNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.activity_main_bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
