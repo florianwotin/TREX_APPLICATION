@@ -15,19 +15,25 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import fr.isep.embeddedgpu.application.R;
+import fr.isep.embeddedgpu.application.bluetooth.BluetoothService;
 import fr.isep.embeddedgpu.application.driving.DrivingService;
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class DrivingFragment extends Fragment {
     public static final String TAG = "[DRIVING FRAGMENT]";
 
+    // Constants
+    public static final int SEND_PERIOD_MS = 100;
+
     // Services
+    protected BluetoothService bluetoothService;
     protected DrivingService drivingService;
 
     // UI
     private View root;
 
-    public DrivingFragment(DrivingService drivingService) {
+    public DrivingFragment(BluetoothService bluetoothService, DrivingService drivingService) {
+        this.bluetoothService = bluetoothService;
         this.drivingService = drivingService;
     }
 
@@ -97,7 +103,7 @@ public class DrivingFragment extends Fragment {
                         // if handler is busy stop callback here
                         if (handler != null) return true;
                         handler = new Handler();
-                        handler.postDelayed(moveForward, DrivingService.SEND_PERIOD_MS);
+                        handler.postDelayed(moveForward, SEND_PERIOD_MS);
                         break;
                     case MotionEvent.ACTION_UP:
                         // if handler is busy stop callback here
@@ -111,8 +117,8 @@ public class DrivingFragment extends Fragment {
 
             final Runnable moveForward = new Runnable() {
                 @Override public void run() {
-                    drivingService.moveForward();
-                    handler.postDelayed(this, DrivingService.SEND_PERIOD_MS);
+                    bluetoothService.sendData(drivingService.buildTramToMove());
+                    handler.postDelayed(this, SEND_PERIOD_MS);
                 }
             };
         });
@@ -131,7 +137,7 @@ public class DrivingFragment extends Fragment {
                         // if handler is busy stop callback here
                         if (handler != null) return true;
                         handler = new Handler();
-                        handler.postDelayed(moveBackward, DrivingService.SEND_PERIOD_MS);
+                        handler.postDelayed(moveBackward, SEND_PERIOD_MS);
                         break;
                     case MotionEvent.ACTION_UP:
                         // if handler is busy stop callback here
@@ -145,8 +151,8 @@ public class DrivingFragment extends Fragment {
 
             final Runnable moveBackward = new Runnable() {
                 @Override public void run() {
-                    drivingService.moveBackward();
-                    handler.postDelayed(this, DrivingService.SEND_PERIOD_MS);
+                    bluetoothService.sendData(drivingService.buildTramToMove());
+                    handler.postDelayed(this, SEND_PERIOD_MS);
                 }
             };
         });

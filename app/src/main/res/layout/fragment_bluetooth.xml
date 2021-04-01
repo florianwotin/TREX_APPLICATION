@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/bluetooth_discoverable_button"
+        app:layout_constraintBottom_toTopOf="@id/bluetooth_connected_dev_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -39,10 +39,35 @@
 
         <Button
             android:id="@+id/bluetooth_state_button"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:maxWidth="130dp"
             android:text="@string/button_enable" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bluetooth_connected_dev_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/bluetooth_discoverable_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bluetooth_state_layout">
+
+        <TextView
+            android:id="@+id/bluetooth_connected_dev_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/bluetooth_no_connected_device"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/bluetooth_connected_dev_disconnect_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/button_disconnect" />
     </LinearLayout>
 
     <Button
@@ -51,17 +76,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/bluetooth_button_discoverable"
-        app:layout_constraintBottom_toTopOf="@+id/bluetooth_paired_devices_button"
+        app:layout_constraintBottom_toTopOf="@+id/bluetooth_devices_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bluetooth_state_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/bluetooth_connected_dev_layout" />
 
     <Button
-        android:id="@+id/bluetooth_paired_devices_button"
+        android:id="@+id/bluetooth_devices_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/bluetooth_button_paired_devices"
+        android:text="@string/bluetooth_button_devices"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bluetooth_discoverable_button" />
