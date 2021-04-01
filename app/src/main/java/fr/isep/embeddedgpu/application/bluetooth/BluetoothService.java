@@ -97,10 +97,14 @@ public class BluetoothService {
     public void sendData(byte[] bytes) {
         String errorStringFormat = "Cannot send data with bluetooth thread: %s";
         if(bluetoothAdapter != null) {
-            if (bluetoothSocket.isConnected() && (bluetoothThread != null)) {
-                bluetoothThread.write(bytes);
+            if (bluetoothSocket != null) {
+                if (bluetoothSocket.isConnected() && (bluetoothThread != null)) {
+                    bluetoothThread.write(bytes);
+                } else {
+                    Log.e(TAG, String.format(errorStringFormat, "bluetooth socket is not connected or bluetooth thread is null"));
+                }
             } else {
-                Log.e(TAG, String.format(errorStringFormat, "bluetooth socket is not connected or bluetooth thread is null"));
+                Log.e(TAG, String.format(errorStringFormat, "bluetooth socket is null"));
             }
         } else {
             Log.e(TAG, String.format(errorStringFormat, "bluetooth is unavailable (adapter is null)"));
