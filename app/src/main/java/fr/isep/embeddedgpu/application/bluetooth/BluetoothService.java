@@ -52,27 +52,27 @@ public class BluetoothService {
                     bluetoothSocket = btDev.createRfcommSocketToServiceRecord(phoneUUID);
                     bluetoothSocket.connect();
                     Log.d(TAG, String.format("Connected to device %s (%s)", btDev.getName(), btDev.getAddress()));
+
+                    // attempt to create handler
+                    Log.d(TAG, "Attempt to create handler");
+                    handler = new Handler(Looper.getMainLooper()) {
+                        @Override
+                        public void handleMessage(Message message) {
+                            if(message.what == RESPONSE_MESSAGE) {
+                                String response = (String)message.obj;
+                                Log.d(TAG, String.format("Handler received: \"%s\"", response));
+                            }
+                        }
+                    };
+
+                    // attempt to create and run bluetooth thread
+                    Log.d(TAG, "Attempt to create and start bluetooth thread");
+                    bluetoothThread = new BluetoothThread(bluetoothSocket, handler);
+                    bluetoothThread.start();
                 } catch (IOException e) {
                     Log.e(TAG, String.format("Cannot create bluetooth socket from device %s (%s) with UUID = %s", btDev.getName(), btDev.getAddress(), phoneUUID.toString()));
                     e.printStackTrace();
                 }
-
-                // attempt to create handler
-                Log.d(TAG, "Attempt to create handler");
-                handler = new Handler(Looper.getMainLooper()) {
-                    @Override
-                    public void handleMessage(Message message) {
-                        if(message.what == RESPONSE_MESSAGE) {
-                            String response = (String)message.obj;
-                            Log.d(TAG, String.format("Handler received: \"%s\"", response));
-                        }
-                    }
-                };
-
-                // attempt to create and run bluetooth thread
-                Log.d(TAG, "Attempt to create and start bluetooth thread");
-                bluetoothThread = new BluetoothThread(bluetoothSocket, handler);
-                bluetoothThread.start();
             } else {
                 Log.e(TAG, String.format(errorStringFormat, btDev.getName(), btDev.getAddress(), "bluetooth is disabled"));
             }
