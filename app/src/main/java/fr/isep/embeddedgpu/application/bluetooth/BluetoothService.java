@@ -30,10 +30,10 @@ public class BluetoothService {
     protected BluetoothSocket bluetoothSocket;
     protected BluetoothThread bluetoothThread;
     protected Handler handler;
-    protected boolean connected;
+    protected boolean isConnected;
 
     public BluetoothService() {
-        connected = false;
+        this.isConnected = false;
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(this.bluetoothAdapter != null){
             Log.d(TAG, "bluetooth is available");
@@ -51,7 +51,7 @@ public class BluetoothService {
                     Log.d(TAG, "Trying to create bluetooth socket");
                     bluetoothSocket = btDev.createRfcommSocketToServiceRecord(PHONE_SECURE_UUID);
                     bluetoothSocket.connect();
-                    connected = true;
+                    isConnected = true;
                     Log.d(TAG, String.format("Connected to device %s (%s)", btDev.getName(), btDev.getAddress()));
 
                     // attempt to create handler
@@ -110,5 +110,7 @@ public class BluetoothService {
         return bluetoothAdapter;
     }
 
-    public boolean isConnected(){return connected;}
+    public boolean isConnected() {
+        return isConnected;
+    }
 }

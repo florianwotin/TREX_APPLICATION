@@ -18,8 +18,10 @@ import java.util.Arrays;
 public class BluetoothThread extends Thread {
     private static final String TAG = "[BLUETOOTH THREAD]";
 
-    // Communication
+    // Constants
     public static final int RESPONSE_MESSAGE = 10;
+
+    // Communication
     protected final BluetoothSocket socket;
     protected final InputStream inputStream;
     protected final OutputStream outputStream;

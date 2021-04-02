@@ -33,6 +33,17 @@ public class DrivingFragment extends Fragment {
     private View root;
     private Handler handler;
 
+    // Runnable
+    private final Runnable sendTramToMove = new Runnable() {
+        @Override public void run() {
+            if(bluetoothService.isConnected()) {
+                bluetoothService.sendData(drivingService.buildTramToMove());
+            }
+            handler.postDelayed(this, SEND_PERIOD_MS);
+        }
+    };
+
+    // Constructor
     public DrivingFragment(BluetoothService bluetoothService, DrivingService drivingService) {
         this.bluetoothService = bluetoothService;
         this.drivingService = drivingService;
@@ -58,18 +69,9 @@ public class DrivingFragment extends Fragment {
         initializeMovingForward();
         initializeMovingBackward();
         handler = new Handler();
-        handler.postDelayed(moveForward, SEND_PERIOD_MS);
+        handler.postDelayed(sendTramToMove, SEND_PERIOD_MS);
         Log.d(TAG, "Initialization OK");
     }
-
-    final Runnable moveForward = new Runnable() {
-        @Override public void run() {
-            if(bluetoothService.isConnected()) {
-                bluetoothService.sendData(drivingService.buildTramToMove());
-            }
-            handler.postDelayed(this, SEND_PERIOD_MS);
-        }
-    };
 
     private void initializeRecording() {
         TextView recordingTextView = root.findViewById(R.id.driving_recording_text);
