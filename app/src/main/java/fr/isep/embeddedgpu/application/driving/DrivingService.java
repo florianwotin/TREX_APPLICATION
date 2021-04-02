@@ -35,6 +35,7 @@ public class DrivingService {
         this.isRecording = false;
         this.forward = false;
         this.backward = false;
+        this.angle = 90;
         this.speedPercent = MAX_SPEED_PERCENT;
         this.accelerationPercent = MAX_ACCELERATION_PERCENT / 2;
         this.previousSpeed = FAKE_ZERO;
@@ -71,11 +72,11 @@ public class DrivingService {
     }
 
     protected byte getLeftSpeed(int speed, double rationRL) {
-        return (byte)(((1-rationRL) * (speed - FAKE_ZERO))/2 + FAKE_ZERO);
+        return (byte)(((1+rationRL) * (speed - FAKE_ZERO))/2 + FAKE_ZERO);
     }
 
     protected byte getRightSpeed(int speed, double rationRL) {
-        return (byte)(((1+rationRL) * (speed - FAKE_ZERO))/2 + FAKE_ZERO);
+        return (byte)(((1-rationRL) * (speed - FAKE_ZERO))/2 + FAKE_ZERO);
     }
 
     public byte[] buildTramToMove(){
@@ -84,16 +85,18 @@ public class DrivingService {
         updateSpeed();
         int newSpeed = getNewSpeed();
         previousSpeed = newSpeed;
-        double rationRL = (Math.cos(angle) * strength) / 100;
+        double rationRL = Math.cos(Math.toRadians(angle));
+
+        Log.d(TAG, String.format("Angle : %d", angle));
 
         // build tram
         byte[] tram = new byte[3];
         tram[0] = (byte) 0x0F;
         tram[1] = getLeftSpeed(newSpeed, rationRL);
         tram[2] = getRightSpeed(newSpeed, rationRL);
-        Log.d(TAG, String.format("moving forward : speed percent=%d ; acceleration percent=%f ; acceleration=%d ; speed=%d ; tram[0]=0x%X ; tram[1]=0x%X ; tram[2]=0x%X",
+        /*Log.d(TAG, String.format("moving forward : speed percent=%d ; acceleration percent=%f ; acceleration=%d ; speed=%d ; tram[0]=0x%X ; tram[1]=0x%X ; tram[2]=0x%X",
                                     speedPercent, accelerationPercent,acceleration,newSpeed, tram[0], tram[1], tram[2]));
-        return tram;
+        */return tram;
     }
 
     public boolean isRecording() {
