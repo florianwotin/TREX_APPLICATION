@@ -77,12 +77,12 @@ public class DrivingFragment extends Fragment {
         Button recordingButton = root.findViewById(R.id.driving_recording_button);
         recordingButton.setOnClickListener(v -> {
             if (drivingService.isRecording()) {
-                bluetoothService.sendData(drivingService.stopRecording());
+                bluetoothService.sendData(drivingService.buildTramToStopRecording());
                 recordingButton.setText(R.string.button_enable);
                 recordingTextView.setText(R.string.driving_recording_disabled);
                 recordingImageView.setImageResource(R.drawable.not_recording_foreground);
             } else {
-                bluetoothService.sendData(drivingService.startRecording());
+                bluetoothService.sendData(drivingService.buildTramToStartRecording());
                 recordingButton.setText(R.string.button_disable);
                 recordingTextView.setText(R.string.driving_recording_enabled);
                 recordingImageView.setImageResource(R.drawable.recording_foreground);
@@ -92,64 +92,41 @@ public class DrivingFragment extends Fragment {
 
     private void initializeDirectionJoystick() {
         JoystickView directionJoystick = root.findViewById(R.id.driving_joystick_direction);
-        directionJoystick.setOnMoveListener(new JoystickView.OnMoveListener() {
-            @Override
-            public void onMove(int angle, int strength) {
-                drivingService.setAngle(angle);
-                drivingService.setStrength(strength);
-            }
+        directionJoystick.setOnMoveListener((angle, strength) -> {
+            drivingService.setAngle(angle);
+            drivingService.setStrength(strength);
         });
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void initializeMovingForward() {
         Button moveForwardButton = root.findViewById(R.id.driving_controls_move_forward);
-        moveForwardButton.setOnTouchListener(new View.OnTouchListener() {
-
-
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        drivingService.setForward(true);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        drivingService.setForward(false);
-                        break;
-                }
-                return false;
+        moveForwardButton.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    drivingService.setForward(true);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    drivingService.setForward(false);
+                    break;
             }
+            return false;
         });
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void initializeMovingBackward() {
         Button moveBackwardButton = root.findViewById(R.id.driving_controls_move_backward);
-        moveBackwardButton.setOnTouchListener(new View.OnTouchListener() {
-            private Handler handler;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // if handler is busy stop callback here
-                        drivingService.setBackward(true);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        // if handler is busy stop callback here
-                        drivingService.setBackward(false);
-                        break;
-                }
-                return false;
+        moveBackwardButton.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    drivingService.setBackward(true);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    drivingService.setBackward(false);
+                    break;
             }
-
-            final Runnable moveBackward = new Runnable() {
-                @Override public void run() {
-                    bluetoothService.sendData(drivingService.buildTramToMove());
-                    handler.postDelayed(this, SEND_PERIOD_MS);
-                }
-            };
+            return false;
         });
     }
 }

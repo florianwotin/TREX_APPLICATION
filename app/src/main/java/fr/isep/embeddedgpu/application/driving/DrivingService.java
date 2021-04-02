@@ -2,7 +2,7 @@ package fr.isep.embeddedgpu.application.driving;
 
 import android.util.Log;
 
-import java.util.UUID;
+import java.util.Arrays;
 
 public class DrivingService {
     private static final String TAG = "[DRIVING SERVICE]";
@@ -70,12 +70,12 @@ public class DrivingService {
         return newSpeed;
     }
 
-    protected byte getLeftSpeed(int speed, double rationRL) {
-        return (byte)(((1-rationRL) * (speed - FAKE_ZERO))/2 + FAKE_ZERO);
+    protected byte getLeftSpeed(int speed, double ratioRL) {
+        return (byte) ((((1 + ratioRL) * (speed - FAKE_ZERO)) / 2) + FAKE_ZERO);
     }
 
-    protected byte getRightSpeed(int speed, double rationRL) {
-        return (byte)(((1+rationRL) * (speed - FAKE_ZERO))/2 + FAKE_ZERO);
+    protected byte getRightSpeed(int speed, double ratioRL) {
+        return (byte) ((((1 - ratioRL) * (speed - FAKE_ZERO)) / 2) + FAKE_ZERO);
     }
 
     public byte[] buildTramToMove(){
@@ -91,8 +91,7 @@ public class DrivingService {
         tram[0] = (byte) 0x0F;
         tram[1] = getLeftSpeed(newSpeed, rationRL);
         tram[2] = getRightSpeed(newSpeed, rationRL);
-        Log.d(TAG, String.format("moving forward : speed percent=%d ; acceleration percent=%f ; acceleration=%d ; speed=%d ; tram[0]=0x%X ; tram[1]=0x%X ; tram[2]=0x%X",
-                                    speedPercent, accelerationPercent,acceleration,newSpeed, tram[0], tram[1], tram[2]));
+        Log.d(TAG, String.format("Moving: built tram = %s", Arrays.toString(tram)));
         return tram;
     }
 
@@ -100,23 +99,23 @@ public class DrivingService {
         return isRecording;
     }
 
-    public byte[] startRecording() {
+    public byte[] buildTramToStartRecording() {
         byte[] tram = new byte[3];
         tram[0] = (byte) 0x0E;
-        tram[1] = 0x00;
-        tram[2] = 0x01;
+        tram[1] = (byte) 0x00;
+        tram[2] = (byte) 0x01;
         isRecording = true;
-        Log.d(TAG, "start recording");
+        Log.d(TAG, String.format("Start recording: built tram = %s", Arrays.toString(tram)));
         return tram;
     }
 
-    public byte[] stopRecording() {
+    public byte[] buildTramToStopRecording() {
         byte[] tram = new byte[3];
         tram[0] = (byte) 0x0E;
-        tram[1] = 0x00;
-        tram[2] = 0x00;
+        tram[1] = (byte) 0x00;
+        tram[2] = (byte) 0x00;
         isRecording = false;
-        Log.d(TAG, "stop recording");
+        Log.d(TAG, String.format("Stop recording: built tram = %s", Arrays.toString(tram)));
         return tram;
     }
 
@@ -155,17 +154,14 @@ public class DrivingService {
 
     public void setStrength(int strength) {
         this.strength = strength;
-        Log.d(TAG, String.format("Forward is now " + Boolean.toString(forward)));
     }
 
     public void setForward(boolean forward){
         this.forward = forward;
-        Log.d(TAG, String.format("Forward is now " + Boolean.toString(forward)));
     }
 
     public void setBackward(boolean backward){
         this.backward = backward;
-        Log.d(TAG, String.format("backward is now " + Boolean.toString(backward)));
     }
 
 }

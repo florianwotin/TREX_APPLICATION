@@ -15,7 +15,10 @@ import static fr.isep.embeddedgpu.application.bluetooth.BluetoothThread.RESPONSE
 
 public class BluetoothService {
     private static final String TAG = "[BLUETOOTH SERVICE]";
-    private static final UUID BLUETOOTH_SPP = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+    // UUID
+    public static final UUID PHONE_SECURE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
     // Requests
     public static final int REQUEST_ENABLE_BLUETOOTH = 0;
     public static final int REQUEST_ENABLE_BLUETOOTH_ADMIN = 1;
@@ -27,11 +30,7 @@ public class BluetoothService {
     protected BluetoothSocket bluetoothSocket;
     protected BluetoothThread bluetoothThread;
     protected Handler handler;
-
-    // Phone
-    protected UUID phoneUUID;
-
-    boolean connected;
+    protected boolean connected;
 
     public BluetoothService() {
         connected = false;
@@ -41,8 +40,6 @@ public class BluetoothService {
         } else {
             Log.d(TAG, "bluetooth is unavailable (adapter is null)");
         }
-        phoneUUID = UUID.randomUUID();
-        Log.d(TAG, String.format("Phone UUID is %s", phoneUUID.toString()));
     }
 
     public void connectToDevice(BluetoothDevice btDev) {
@@ -52,7 +49,7 @@ public class BluetoothService {
                 // try to create bluetooth socket
                 try {
                     Log.d(TAG, "Trying to create bluetooth socket");
-                    bluetoothSocket = btDev.createRfcommSocketToServiceRecord(BLUETOOTH_SPP);
+                    bluetoothSocket = btDev.createRfcommSocketToServiceRecord(PHONE_SECURE_UUID);
                     bluetoothSocket.connect();
                     connected = true;
                     Log.d(TAG, String.format("Connected to device %s (%s)", btDev.getName(), btDev.getAddress()));
@@ -74,14 +71,14 @@ public class BluetoothService {
                     bluetoothThread = new BluetoothThread(bluetoothSocket, handler);
                     bluetoothThread.start();
                 } catch (IOException e) {
-                    Log.e(TAG, String.format("Cannot create bluetooth socket from device %s (%s) with UUID = %s", btDev.getName(), btDev.getAddress(), phoneUUID.toString()));
+                    Log.e(TAG, String.format("Cannot create bluetooth socket from device %s (%s) with UUID = %s", btDev.getName(), btDev.getAddress(), PHONE_SECURE_UUID.toString()));
                     e.printStackTrace();
                 }
             } else {
-                Log.e(TAG, String.format(errorStringFormat, btDev.getName(), btDev.getAddress(), "bluetooth is disabled"));
+                Log.e(TAG, String.format(errorStringFormat, btDev.getName(), btDev.getAddress(), "Bluetooth is disabled"));
             }
         } else {
-            Log.e(TAG, String.format(errorStringFormat, btDev.getName(), btDev.getAddress(), "bluetooth is unavailable (adapter is null)"));
+            Log.e(TAG, String.format(errorStringFormat, btDev.getName(), btDev.getAddress(), "Bluetooth is unavailable (adapter is null)"));
         }
     }
 
@@ -99,13 +96,13 @@ public class BluetoothService {
                 if (bluetoothSocket.isConnected() && (bluetoothThread != null)) {
                     bluetoothThread.write(bytes);
                 } else {
-                    Log.e(TAG, String.format(errorStringFormat, "bluetooth socket is not connected or bluetooth thread is null"));
+                    Log.e(TAG, String.format(errorStringFormat, "Bluetooth socket is not connected or bluetooth thread is null"));
                 }
             } else {
-                Log.e(TAG, String.format(errorStringFormat, "bluetooth socket is null"));
+                Log.e(TAG, String.format(errorStringFormat, "Bluetooth socket is null"));
             }
         } else {
-            Log.e(TAG, String.format(errorStringFormat, "bluetooth is unavailable (adapter is null)"));
+            Log.e(TAG, String.format(errorStringFormat, "Bluetooth is unavailable (adapter is null)"));
         }
     }
 
