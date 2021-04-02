@@ -92,9 +92,12 @@ public class DrivingFragment extends Fragment {
 
     private void initializeDirectionJoystick() {
         JoystickView directionJoystick = root.findViewById(R.id.driving_joystick_direction);
-        directionJoystick.setOnMoveListener((angle, strength) -> {
-            drivingService.setAngle(angle);
-            drivingService.setStrength(strength);
+        directionJoystick.setOnMoveListener(new JoystickView.OnMoveListener() {
+            @Override
+            public void onMove(int angle, int strength) {
+                drivingService.setAngle((strength == 0 ) ? 90 : angle);
+                drivingService.setStrength(strength);
+            }
         });
     }
 

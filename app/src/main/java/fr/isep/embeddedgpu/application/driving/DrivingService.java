@@ -35,6 +35,7 @@ public class DrivingService {
         this.isRecording = false;
         this.forward = false;
         this.backward = false;
+        this.angle = 90;
         this.speedPercent = MAX_SPEED_PERCENT;
         this.accelerationPercent = MAX_ACCELERATION_PERCENT / 2;
         this.previousSpeed = FAKE_ZERO;
@@ -84,7 +85,9 @@ public class DrivingService {
         updateSpeed();
         int newSpeed = getNewSpeed();
         previousSpeed = newSpeed;
-        double rationRL = (Math.cos(angle) * strength) / 100;
+        double rationRL = Math.cos(Math.toRadians(angle));
+
+        Log.d(TAG, String.format("Angle : %d", angle));
 
         // build tram
         byte[] tram = new byte[3];
@@ -163,5 +166,4 @@ public class DrivingService {
     public void setBackward(boolean backward){
         this.backward = backward;
     }
-
 }
