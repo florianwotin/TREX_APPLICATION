@@ -92,12 +92,8 @@ public class DrivingFragment extends Fragment {
 
     private void initializeDirectionJoystick() {
         JoystickView directionJoystick = root.findViewById(R.id.driving_joystick_direction);
-        directionJoystick.setOnMoveListener(new JoystickView.OnMoveListener() {
-            @Override
-            public void onMove(int angle, int strength) {
-                drivingService.setAngle((strength == 0 ) ? 90 : angle);
-                drivingService.setStrength(strength);
-            }
+        directionJoystick.setOnMoveListener((angle, strength) -> {
+            drivingService.setAngle((strength == 0 ) ? 90 : angle);
         });
     }
 
@@ -107,10 +103,10 @@ public class DrivingFragment extends Fragment {
         moveForwardButton.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    drivingService.setForward(true);
+                    drivingService.setMovingForward(true);
                     break;
                 case MotionEvent.ACTION_UP:
-                    drivingService.setForward(false);
+                    drivingService.setMovingForward(false);
                     break;
             }
             return false;
@@ -123,10 +119,10 @@ public class DrivingFragment extends Fragment {
         moveBackwardButton.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    drivingService.setBackward(true);
+                    drivingService.setMovingBackward(true);
                     break;
                 case MotionEvent.ACTION_UP:
-                    drivingService.setBackward(false);
+                    drivingService.setMovingBackward(false);
                     break;
             }
             return false;

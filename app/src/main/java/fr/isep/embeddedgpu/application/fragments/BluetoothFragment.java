@@ -246,9 +246,7 @@ public class BluetoothFragment extends Fragment {
     private void setOnListViewItemClickListener(ListView listView, AlertDialog popup, List<BluetoothDevice> btDevices) {
         // crete a list with names + address
         List<String> devicesNames = new ArrayList<String>();
-        btDevices.forEach(btDev -> {
-            devicesNames.add(String.format("%s (%s)", btDev.getName(), btDev.getAddress()));
-        });
+        btDevices.forEach(btDev -> devicesNames.add(String.format("%s (%s)", btDev.getName(), btDev.getAddress())));
 
         // on item click callback
         listView.setOnItemClickListener((parent, view, position, id) -> {
