@@ -10,6 +10,7 @@ public class DrivingService {
     // Driving constants
     public static final int MIN_SPEED = 0;
     public static final int MAX_SPEED = 255;
+    public static final int FAKE_ZERO = 127;
     public static final int MIN_SPEED_PERCENT = 0;
     public static final int MAX_SPEED_PERCENT = 100;
     public static final int ACCELERATION = 10;
@@ -22,17 +23,21 @@ public class DrivingService {
     private int minSpeed;
     private int acceleration;
     private int speedPercent;
-    private int accelerationPercent;
+    private double accelerationPercent;
     private int angle;
     private int strength;
     private boolean isRecording;
+    private boolean forward;
+    private boolean backward;
 
     // Constructor
     public DrivingService() {
         this.isRecording = false;
+        this.forward = false;
+        this.backward = false;
         this.speedPercent = MAX_SPEED_PERCENT;
         this.accelerationPercent = MAX_ACCELERATION_PERCENT / 2;
-        this.previousSpeed = 0;
+        this.previousSpeed = FAKE_ZERO;
         this.updateSpeed();
         this.updateAcceleration();
     }
@@ -43,38 +48,42 @@ public class DrivingService {
     }
 
     protected void updateMaxSpeed() {
-        maxSpeed = ((MAX_SPEED - 127) * (speedPercent / 100)) + 127;
+        maxSpeed = ((MAX_SPEED - FAKE_ZERO) * (speedPercent/100)) + FAKE_ZERO;
     }
 
     protected void updateMinSpeed() {
-        minSpeed = ((MIN_SPEED - 127) * (speedPercent / 100)) + 127;
+        minSpeed = ((MIN_SPEED - FAKE_ZERO) * (speedPercent/100)) + FAKE_ZERO;
     }
 
     protected void updateAcceleration() {
-        acceleration = ACCELERATION * (accelerationPercent / 100);
+        acceleration = (int) (ACCELERATION * (accelerationPercent / 100));
     }
 
     protected int getNewSpeed() {
-        int newSpeed = previousSpeed + acceleration;
-        previousSpeed = newSpeed;
+        int newSpeed = (forward) ?previousSpeed + acceleration : (backward)? previousSpeed - acceleration : FAKE_ZERO;
+
         if (newSpeed < minSpeed) {
-            return minSpeed;
-        } else return Math.min(newSpeed, maxSpeed);
+            newSpeed = minSpeed;
+        } else {
+            newSpeed = Math.min(newSpeed, maxSpeed);
+        }
+        return newSpeed;
     }
 
     protected byte getLeftSpeed(int speed, double rationRL) {
-        int leftSpeed = (int) ((speed * (1 - rationRL)) / 2);
-        return (byte) leftSpeed;
+        return (byte)(((1-rationRL) * (speed - FAKE_ZERO))/2 + FAKE_ZERO);
     }
 
     protected byte getRightSpeed(int speed, double rationRL) {
-        int rightSpeed = (int) ((speed * (1 + rationRL)) / 2);
-        return (byte) rightSpeed;
+        return (byte)(((1+rationRL) * (speed - FAKE_ZERO))/2 + FAKE_ZERO);
     }
 
     public byte[] buildTramToMove(){
         // get new speed and ratio Right over Left
+        updateAcceleration();
+        updateSpeed();
         int newSpeed = getNewSpeed();
+        previousSpeed = newSpeed;
         double rationRL = (Math.cos(angle) * strength) / 100;
 
         // build tram
@@ -82,7 +91,8 @@ public class DrivingService {
         tram[0] = (byte) 0x0F;
         tram[1] = getLeftSpeed(newSpeed, rationRL);
         tram[2] = getRightSpeed(newSpeed, rationRL);
-        Log.d(TAG, String.format("moving forward : speed percent=%d ; acceleration percent=%d ; tram[0]=%x ; tram[1]=%d ; tram[2]=%d", speedPercent, accelerationPercent, tram[0], tram[1], tram[2]));
+        Log.d(TAG, String.format("moving forward : speed percent=%d ; acceleration percent=%f ; acceleration=%d ; speed=%d ; tram[0]=0x%X ; tram[1]=0x%X ; tram[2]=0x%X",
+                                    speedPercent, accelerationPercent,acceleration,newSpeed, tram[0], tram[1], tram[2]));
         return tram;
     }
 
@@ -90,14 +100,24 @@ public class DrivingService {
         return isRecording;
     }
 
-    public void startRecording() {
+    public byte[] startRecording() {
+        byte[] tram = new byte[3];
+        tram[0] = (byte) 0x0E;
+        tram[1] = 0x00;
+        tram[2] = 0x01;
         isRecording = true;
         Log.d(TAG, "start recording");
+        return tram;
     }
 
-    public void stopRecording() {
+    public byte[] stopRecording() {
+        byte[] tram = new byte[3];
+        tram[0] = (byte) 0x0E;
+        tram[1] = 0x00;
+        tram[2] = 0x00;
         isRecording = false;
         Log.d(TAG, "stop recording");
+        return tram;
     }
 
     public int getSpeedPercent() {
@@ -110,7 +130,7 @@ public class DrivingService {
         Log.d(TAG, String.format("speed is now %d", speedPercent));
     }
 
-    public int getAccelerationPercent() {
+    public double getAccelerationPercent() {
         return accelerationPercent;
     }
 
@@ -135,6 +155,17 @@ public class DrivingService {
 
     public void setStrength(int strength) {
         this.strength = strength;
-        Log.d(TAG, String.format("strength is now %d", strength));
+        Log.d(TAG, String.format("Forward is now " + Boolean.toString(forward)));
     }
+
+    public void setForward(boolean forward){
+        this.forward = forward;
+        Log.d(TAG, String.format("Forward is now " + Boolean.toString(forward)));
+    }
+
+    public void setBackward(boolean backward){
+        this.backward = backward;
+        Log.d(TAG, String.format("backward is now " + Boolean.toString(backward)));
+    }
+
 }

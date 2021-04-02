@@ -72,7 +72,7 @@ public class SettingsFragment extends Fragment {
         SeekBar maxAccelerationPercentSlider = root.findViewById(R.id.settings_accel_slider);
         maxAccelerationPercentSlider.setMin(DrivingService.MIN_ACCELERATION_PERCENT);
         maxAccelerationPercentSlider.setMax(DrivingService.MAX_ACCELERATION_PERCENT);
-        maxAccelerationPercentSlider.setProgress(drivingService.getAccelerationPercent());
+        maxAccelerationPercentSlider.setProgress((int)drivingService.getAccelerationPercent());
         maxAccelerationPercentSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

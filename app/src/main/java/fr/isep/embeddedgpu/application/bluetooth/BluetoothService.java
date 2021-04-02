@@ -15,7 +15,7 @@ import static fr.isep.embeddedgpu.application.bluetooth.BluetoothThread.RESPONSE
 
 public class BluetoothService {
     private static final String TAG = "[BLUETOOTH SERVICE]";
-
+    private static final UUID BLUETOOTH_SPP = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     // Requests
     public static final int REQUEST_ENABLE_BLUETOOTH = 0;
     public static final int REQUEST_ENABLE_BLUETOOTH_ADMIN = 1;
@@ -31,7 +31,10 @@ public class BluetoothService {
     // Phone
     protected UUID phoneUUID;
 
+    boolean connected;
+
     public BluetoothService() {
+        connected = false;
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(this.bluetoothAdapter != null){
             Log.d(TAG, "bluetooth is available");
@@ -49,8 +52,9 @@ public class BluetoothService {
                 // try to create bluetooth socket
                 try {
                     Log.d(TAG, "Trying to create bluetooth socket");
-                    bluetoothSocket = btDev.createRfcommSocketToServiceRecord(phoneUUID);
+                    bluetoothSocket = btDev.createRfcommSocketToServiceRecord(BLUETOOTH_SPP);
                     bluetoothSocket.connect();
+                    connected = true;
                     Log.d(TAG, String.format("Connected to device %s (%s)", btDev.getName(), btDev.getAddress()));
 
                     // attempt to create handler
@@ -108,4 +112,6 @@ public class BluetoothService {
     public BluetoothAdapter getBluetoothAdapter() {
         return bluetoothAdapter;
     }
+
+    public boolean isConnected(){return connected;}
 }

@@ -31,6 +31,7 @@ public class DrivingFragment extends Fragment {
 
     // UI
     private View root;
+    private Handler handler;
 
     public DrivingFragment(BluetoothService bluetoothService, DrivingService drivingService) {
         this.bluetoothService = bluetoothService;
@@ -56,8 +57,19 @@ public class DrivingFragment extends Fragment {
         initializeDirectionJoystick();
         initializeMovingForward();
         initializeMovingBackward();
+        handler = new Handler();
+        handler.postDelayed(moveForward, SEND_PERIOD_MS);
         Log.d(TAG, "Initialization OK");
     }
+
+    final Runnable moveForward = new Runnable() {
+        @Override public void run() {
+            if(bluetoothService.isConnected()) {
+                bluetoothService.sendData(drivingService.buildTramToMove());
+            }
+            handler.postDelayed(this, SEND_PERIOD_MS);
+        }
+    };
 
     private void initializeRecording() {
         TextView recordingTextView = root.findViewById(R.id.driving_recording_text);
@@ -65,12 +77,12 @@ public class DrivingFragment extends Fragment {
         Button recordingButton = root.findViewById(R.id.driving_recording_button);
         recordingButton.setOnClickListener(v -> {
             if (drivingService.isRecording()) {
-                drivingService.stopRecording();
+                bluetoothService.sendData(drivingService.stopRecording());
                 recordingButton.setText(R.string.button_enable);
                 recordingTextView.setText(R.string.driving_recording_disabled);
                 recordingImageView.setImageResource(R.drawable.not_recording_foreground);
             } else {
-                drivingService.startRecording();
+                bluetoothService.sendData(drivingService.startRecording());
                 recordingButton.setText(R.string.button_disable);
                 recordingTextView.setText(R.string.driving_recording_enabled);
                 recordingImageView.setImageResource(R.drawable.recording_foreground);
@@ -93,34 +105,21 @@ public class DrivingFragment extends Fragment {
     private void initializeMovingForward() {
         Button moveForwardButton = root.findViewById(R.id.driving_controls_move_forward);
         moveForwardButton.setOnTouchListener(new View.OnTouchListener() {
-            private Handler handler;
+
 
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        // if handler is busy stop callback here
-                        if (handler != null) return true;
-                        handler = new Handler();
-                        handler.postDelayed(moveForward, SEND_PERIOD_MS);
+                        drivingService.setForward(true);
                         break;
                     case MotionEvent.ACTION_UP:
-                        // if handler is busy stop callback here
-                        if (handler == null) return true;
-                        handler.removeCallbacks(moveForward);
-                        handler = null;
+                        drivingService.setForward(false);
                         break;
                 }
                 return false;
             }
-
-            final Runnable moveForward = new Runnable() {
-                @Override public void run() {
-                    bluetoothService.sendData(drivingService.buildTramToMove());
-                    handler.postDelayed(this, SEND_PERIOD_MS);
-                }
-            };
         });
     }
 
@@ -135,15 +134,11 @@ public class DrivingFragment extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         // if handler is busy stop callback here
-                        if (handler != null) return true;
-                        handler = new Handler();
-                        handler.postDelayed(moveBackward, SEND_PERIOD_MS);
+                        drivingService.setBackward(true);
                         break;
                     case MotionEvent.ACTION_UP:
                         // if handler is busy stop callback here
-                        if (handler == null) return true;
-                        handler.removeCallbacks(moveBackward);
-                        handler = null;
+                        drivingService.setBackward(false);
                         break;
                 }
                 return false;
