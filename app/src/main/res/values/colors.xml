@@ -8,4 +8,8 @@
     <color name="deep_blue">#007299</color>
     <color name="blue">#0099CC</color>
     <color name="light_blue">#00BFFF</color>
+    <color name="sky_blue">#85C7F2</color>
+    <color name="dark_grey">#4C4C4C</color>
+    <color name="grey">#636363</color>
+    <color name="light_grey">#D1D1D1</color>
 </resources>
