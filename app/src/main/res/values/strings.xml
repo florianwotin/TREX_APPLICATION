@@ -18,6 +18,8 @@
     <!-- BUTTONS -->
     <string name="button_enable">Activer</string>
     <string name="button_disable">Désactiver</string>
+    <string name="button_record">Enregistrer</string>
+    <string name="button_stoprecord">Arrêter</string>
     <string name="button_connect">Connecter</string>
     <string name="button_disconnect">Déconnecter</string>
     <string name="button_modify">Modifier</string>
@@ -26,7 +28,7 @@
     <string name="button_move_backward">Reculer</string>
 
     <!-- DRIVING -->
-    <string name="driving_recording_enabled">Enregistrement activé</string>
+    <string name="driving_recording_enabled">Enregistrement en cours</string>
     <string name="driving_recording_disabled">Enregistrement désactivé</string>
 
     <!-- BLUETOOTH -->
