@@ -45,7 +45,7 @@ public class DrivingService {
         // set default attributes
         this.angle = 90;
         this.speedPercent = MAX_SPEED_PERCENT;
-        this.accelerationPercent = MAX_ACCELERATION_PERCENT / 2;
+        this.accelerationPercent = MAX_ACCELERATION_PERCENT / 2.0;
         this.previousSpeed = FAKE_ZERO;
 
         // update

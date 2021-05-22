@@ -64,12 +64,17 @@ public class DrivingFragment extends Fragment {
 
     private void initialize() {
         Log.d(TAG, "Starting initialization");
+
+        // initialize all components
         initializeRecording();
         initializeDirectionJoystick();
         initializeMovingForward();
         initializeMovingBackward();
+
+        // send tram to move periodically
         handler = new Handler();
         handler.postDelayed(sendTramToMove, SEND_PERIOD_MS);
+
         Log.d(TAG, "Initialization OK");
     }
 
@@ -101,15 +106,15 @@ public class DrivingFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initializeMovingForward() {
-        Button moveForwardButton = root.findViewById(R.id.driving_controls_move_forward);
-        moveForwardButton.setOnTouchListener((v, event) -> {
+        ImageView moveForwardImg = root.findViewById(R.id.driving_controls_move_forward);
+        moveForwardImg.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     drivingService.setMovingForward(true);
-                    break;
+                    return true;
                 case MotionEvent.ACTION_UP:
                     drivingService.setMovingForward(false);
-                    break;
+                    return true;
             }
             return false;
         });
@@ -117,15 +122,15 @@ public class DrivingFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initializeMovingBackward() {
-        Button moveBackwardButton = root.findViewById(R.id.driving_controls_move_backward);
-        moveBackwardButton.setOnTouchListener((v, event) -> {
+        ImageView moveBackwardImg = root.findViewById(R.id.driving_controls_move_backward);
+        moveBackwardImg.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     drivingService.setMovingBackward(true);
-                    break;
+                    return true;
                 case MotionEvent.ACTION_UP:
                     drivingService.setMovingBackward(false);
-                    break;
+                    return true;
             }
             return false;
         });
