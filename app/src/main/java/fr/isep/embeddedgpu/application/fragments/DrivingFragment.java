@@ -80,12 +80,12 @@ public class DrivingFragment extends Fragment {
         recordingButton.setOnClickListener(v -> {
             if (drivingService.isRecording()) {
                 bluetoothService.sendData(drivingService.buildTramToStopRecording());
-                recordingButton.setText(R.string.button_enable);
+                recordingButton.setText(R.string.button_record);
                 recordingTextView.setText(R.string.driving_recording_disabled);
                 recordingImageView.setImageResource(R.drawable.not_recording_foreground);
             } else {
                 bluetoothService.sendData(drivingService.buildTramToStartRecording());
-                recordingButton.setText(R.string.button_disable);
+                recordingButton.setText(R.string.button_stoprecord);
                 recordingTextView.setText(R.string.driving_recording_enabled);
                 recordingImageView.setImageResource(R.drawable.recording_foreground);
             }

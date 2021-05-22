@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="140dp"
-            android:text="@string/button_enable" />
+            android:text="@string/button_record" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,10 +59,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:JV_backgroundColor="#009688"
-            app:JV_borderColor="#00796B"
-            app:JV_borderWidth="4dp"
-            app:JV_buttonColor="#FF6E40"
+            app:JV_backgroundColor="@color/white"
+            app:JV_borderColor="@color/deep_blue"
+            app:JV_borderWidth="2dp"
+            app:JV_buttonColor="@color/dark_blue"
             app:JV_buttonSizeRatio="20%"
             app:JV_fixedCenter="false"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -85,10 +85,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:minWidth="140dp"
-                android:text="@string/button_move_forward"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
                 app:icon="@drawable/arrow_upward_foreground"
-                app:iconSize="20dp" />
+                app:iconSize="90dp" />
 
             <Button
                 android:id="@+id/driving_controls_move_backward"
@@ -96,10 +96,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:minWidth="140dp"
-                android:text="@string/button_move_backward"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
                 app:icon="@drawable/arrow_downward_foreground"
-                app:iconSize="20dp" />
+                app:iconSize="90dp" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
