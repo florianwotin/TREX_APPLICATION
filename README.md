@@ -6,13 +6,13 @@
 Main goals of our mobile application are to connect to [robot raspberry](https://github.com/florianwotin/TREX_RASPBERRY) using bluetooth and to drive the robot. In the driving tab, you can also manage recording for [our neural network IA](https://github.com/florianwotin/TREX_IA.git).
 
 To answer these goals, our app is made up of 3 tabs:
-- [[#Bluetooth tab]]
-- [[#Driving tab]]
-- [[#Settings tab]]
+- [Bluetooth tab](#Bluetooth-tab)
+- [Driving tab](#Driving-tab)
+- [Settings tab](#Settings-tab)
 
-Before to start the app, dont forget to read [[#Before to start the app]] and [[#Permissions]] sections.
+Before to start the app, dont forget to read [before to start the app](#Before-to-start-the-app) and [permissions](#Permissions) sections.
 
-When you start the app, you arrive in [[#Bluetooth tab]].
+When you start the app, you arrive in [bluetooth tab](#Bluetooth-tab).
 
 ## Installation
 ### Clone git repository on your computer
@@ -59,7 +59,7 @@ Then, find it, and click on it.
 
 Once you have clicked, android will ask you to activate the possibility to install applications from external unsecure sources. Activate this permission, otherwise you won't be able to install our app from the external apk you built.
 
-Once permissions is provided, the application will be installed on your phone and you should be able to find it with your other applications.
+Once permissions are provided, the application will be installed on your phone and you should be able to find it with your other applications.
 
 You can now start it when you want !
 
@@ -67,7 +67,7 @@ You can now start it when you want !
 
 Before to start the app, ensure these prerequisites are ok:
 
-- [[#Pair raspberry bluetooth device]]
+- [Pair raspberry bluetooth device](#Pair-raspberry-bluetooth-device)
 
 ### Pair raspberry bluetooth device
 
@@ -85,7 +85,7 @@ To pair raspberry bluetooth device on your phone:
 
 ## Permissions
 
-When you'll start the app, you system will ask you if you agree to provide TREXapplication some permissions.
+When you'll start the app, you system will ask you if you agree to provide TREX application some permissions.
 
 Applications needs these permissions to fully work:
 
@@ -107,8 +107,31 @@ Indeed, in this tab, you can:
 - Turn ON/OFF recording
 - Drive the robot using left joystick for direction and right buttons to move forward or backward
 
+#### Trams to move the robot
+
+When the app starts, it also starts a thread that will send periodically trams to raspberry via Bluetooth in order to move the robot.
+
+When you move joystick or press moving forward or moving backward button, driving parameters are updated and trams content will automatically change.
+
+A tram to move the robot is composed of 3 bytes:
+
+- byte 0: beginning byte **0x0F**
+- byte 1: left engine value
+- byte 2: right engine value
+
+#### Trams to manage recording
+
+When you click start or stop recording button, it will send a tram to raspberry via Bluetooth.
+
+A tram to manage recording is composed of 3 bytes:
+
+- byte 0: beginning byte **0x0E**
+- byte 1: zero byte **0x00**
+- byte 2: byte to enable (**0x01**) or disable (**0x00**) recording
+
 ### Settings tab
 As indicated by its name, settings tab contains application settings.
 Indeed, in this tab, you can:
+
 - Modify maximum speed percentage of the robot using the appropriate slider.
 - Modify acceleration percentage of the robot using the appripriate slider.

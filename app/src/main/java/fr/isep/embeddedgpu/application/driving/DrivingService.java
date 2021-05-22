@@ -135,7 +135,7 @@ public class DrivingService {
 
     protected void setRecording(boolean isRecording) {
         this.isRecording = isRecording;
-        Log.d(TAG, String.format("Recording is %s", isRecording ? "on" : "off"));
+        Log.d(TAG, String.format("Recording is %s", isRecording ? "enabled" : "disabled"));
     }
 
     public int getSpeedPercent() {
