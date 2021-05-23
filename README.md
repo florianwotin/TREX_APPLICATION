@@ -49,7 +49,7 @@ To achieve this purpose, we used the IDE [Android Studio](https://developer.andr
 3. Wait all source files are loaded in the IDE, and wait initialization steps are finished.
 4. Click on Build > Build Bundle(s) / APK (s) > Build APK
 
-![](doc\images\ScreenshotBuildApk.png)
+![](doc/images/ScreenshotBuildApk.png)
 
 ### Get the app on your phone
 
@@ -100,7 +100,7 @@ Indeed, in this tab, you can:
 - Make your device being discoverable by other blutooth devices
 - Turn ON/OFF Bluetooth on your phone
 
-![](doc\images\ScreenshotBluetooth.jpg)
+![](doc/images/ScreenshotBluetooth.jpg)
 
 ### Driving tab
 Bluetooth tab of our mobile application regroups allows you to drive the robot and to manage recording.
@@ -109,7 +109,7 @@ Indeed, in this tab, you can:
 - Turn ON/OFF recording
 - Drive the robot using left joystick for direction and right buttons to move forward or backward
 
-![](doc\images\ScreenshotDriving.jpg)
+![](doc/images/ScreenshotDriving.jpg)
 
 #### Trams to move the robot
 
@@ -140,4 +140,4 @@ Indeed, in this tab, you can:
 - Modify maximum speed percentage of the robot using the appropriate slider.
 - Modify acceleration percentage of the robot using the appripriate slider.
 
-![](doc\images\ScreenshotSettings.jpg)
+![](doc/images/ScreenshotSettings.jpg)
